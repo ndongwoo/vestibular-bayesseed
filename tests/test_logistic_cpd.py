@@ -1,10 +1,8 @@
 from __future__ import annotations
 
-import math
-
 import pytest
 
-from bayesseed.logistic_cpd import clip, logit, logistic_probability, sigmoid
+from bayesseed.logistic_cpd import clip, logistic_probability, logit, sigmoid
 
 
 def test_sigmoid_and_logit_are_inverse_for_common_probabilities() -> None:

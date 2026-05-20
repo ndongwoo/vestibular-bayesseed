@@ -92,8 +92,8 @@ def normalize_case_values(case: Mapping[str, Any]) -> dict[str, float | int | bo
             else:
                 try:
                     out[str(key)] = float(v)
-                except ValueError:
-                    raise ValueError(f"Cannot interpret case value for '{key}': {value!r}")
+                except ValueError as exc:
+                    raise ValueError(f"Cannot interpret case value for '{key}': {value!r}") from exc
         else:
             raise ValueError(f"Unsupported case value type for '{key}': {type(value).__name__}")
     return out
@@ -169,6 +169,19 @@ def infer_modules(
     ]
 
 
+def _sanitize_for_json(data: dict[str, Any]) -> dict[str, Any]:
+    """Recursively convert NaN and other float NaN values to None for safe JSON output."""
+    sanitized: dict[str, Any] = {}
+    for k, v in data.items():
+        if isinstance(v, float) and v != v:
+            sanitized[k] = None
+        elif isinstance(v, dict):
+            sanitized[k] = _sanitize_for_json(v)
+        else:
+            sanitized[k] = v
+    return sanitized
+
+
 def infer_case(
     module_path: str | Path,
     case: Mapping[str, Any],
@@ -189,7 +202,13 @@ def infer_case(
             row["module_display_name"] = result.display_name
             disease_rows.append(row)
     disease_rows.sort(key=lambda r: r["posterior"], reverse=True)
-    return {"case": dict(case), "disease_results": disease_rows, "modules": [r.to_dict() for r in results]}
+    return _sanitize_for_json(
+        {
+            "case": dict(case),
+            "disease_results": disease_rows,
+            "modules": [r.to_dict() for r in results],
+        }
+    )
 
 
 def read_case_file(path: str | Path) -> list[dict[str, Any]]:
@@ -215,6 +234,13 @@ def read_case_file(path: str | Path) -> list[dict[str, Any]]:
     raise ValueError("Case file must be .json or .csv")
 
 
+def _clean_nan(value: Any) -> Any:
+    """Convert float NaN to None so JSON serialization remains safe."""
+    if isinstance(value, float) and value != value:
+        return None
+    return value
+
+
 def batch_infer(
     module_path: str | Path,
     case_file: str | Path,
@@ -228,7 +254,10 @@ def batch_infer(
     outputs: list[dict[str, Any]] = []
     for i, case in enumerate(cases, start=1):
         results = infer_modules(
-            modules, case, derived_value_mode=derived_value_mode, derived_threshold=derived_threshold
+            modules,
+            case,
+            derived_value_mode=derived_value_mode,
+            derived_threshold=derived_threshold,
         )
         rows: list[dict[str, Any]] = []
         for result in results:
@@ -238,5 +267,6 @@ def batch_infer(
                 row["module_display_name"] = result.display_name
                 rows.append(row)
         rows.sort(key=lambda r: r["posterior"], reverse=True)
-        outputs.append({"case_index": i, "case": case, "disease_results": rows})
+        sanitized_case = {k: _clean_nan(v) for k, v in case.items()}
+        outputs.append({"case_index": i, "case": sanitized_case, "disease_results": rows})
     return outputs

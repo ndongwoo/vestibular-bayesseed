@@ -19,7 +19,6 @@ from __future__ import annotations
 import json
 import os
 import sys
-from copy import deepcopy
 from pathlib import Path
 from typing import Any
 
@@ -45,7 +44,6 @@ from bayesseed.inference import infer_modules  # noqa: E402
 from bayesseed.module_loader import load_modules, load_sensitivity_config  # noqa: E402
 from bayesseed.sensitivity import beta_grid, one_way_sensitivity  # noqa: E402
 from bayesseed.visualization import edge_list, to_mermaid  # noqa: E402
-
 
 # -----------------------------------------------------------------------------
 # Streamlit configuration
@@ -114,7 +112,9 @@ def default_sensitivity_path(module_path: str) -> str | None:
         return env_path
     candidates = [
         Path(module_path) / "sensitivity_ranges.json",
-        *_candidate_paths("default_modules/sensitivity_ranges.json", "modules/sensitivity_ranges.json"),
+        *_candidate_paths(
+            "default_modules/sensitivity_ranges.json", "modules/sensitivity_ranges.json"
+        ),
     ]
     for p in candidates:
         if p.exists() and p.is_file():
@@ -328,7 +328,6 @@ def flatten_inference_results(results: list[Any]) -> pd.DataFrame:
 
 def contribution_dataframe(result: Any) -> pd.DataFrame:
     rows: list[dict[str, Any]] = []
-    label_maps = {}
     for disease in result.ranked():
         for parent, contribution in disease.contributions.items():
             rows.append(
@@ -339,7 +338,9 @@ def contribution_dataframe(result: Any) -> pd.DataFrame:
                     "contribution": contribution,
                 }
             )
-    return pd.DataFrame(rows).sort_values("contribution", ascending=False) if rows else pd.DataFrame()
+    return (
+        pd.DataFrame(rows).sort_values("contribution", ascending=False) if rows else pd.DataFrame()
+    )
 
 
 def derived_trace_dataframe(result: Any) -> pd.DataFrame:
@@ -429,11 +430,12 @@ module_ids = {str(m.get("module_id")): m for m in modules}
 # Header
 # -----------------------------------------------------------------------------
 st.title("Vestibular-BayesSeed")
-st.subheader("Open-source seed framework for evidence-anchored logistic Bayesian diagnostic networks")
+st.subheader(
+    "Open-source seed framework for evidence-anchored logistic Bayesian diagnostic networks"
+)
 
 with st.expander("Intended use and scope", expanded=False):
-    st.markdown(
-        """
+    st.markdown("""
         This Streamlit app demonstrates how JSON-defined vestibular disease modules can be
         inspected, simulated, and sensitivity-tested. It is designed to support a SoftwareX-style
         open-source research software submission.
@@ -441,8 +443,7 @@ with st.expander("Intended use and scope", expanded=False):
         **It is not a validated clinical decision-support system.** The included BPPV, Ménière's
         disease, and presbyvestibulopathy/bilateral vestibulopathy modules are transparent worked
         examples, not deployment-ready diagnostic models.
-        """
-    )
+        """)
 
 
 # -----------------------------------------------------------------------------
@@ -464,22 +465,32 @@ with tab_overview:
     c4.metric("Edges", sum(len(m.get("edges", [])) for m in modules))
 
     st.markdown("### Architecture")
-    st.markdown(
-        """
+    st.markdown("""
         The software separates **domain knowledge** from **inference logic**:
 
         1. Disease-specific knowledge is stored in JSON modules.
         2. The Python package validates modules, evaluates derived nodes, and computes logistic-CPD posteriors.
         3. This Streamlit app provides an optional interactive frontend for demonstration and education.
-        """
-    )
+        """)
 
     arch_df = pd.DataFrame(
         [
-            {"Layer": "JSON disease modules", "Responsibility": "Input nodes, derived nodes, target diseases, edges, beta values, evidence metadata"},
-            {"Layer": "bayesseed core engine", "Responsibility": "Schema validation, derived-node evaluation, logistic CPD inference, sensitivity analysis"},
-            {"Layer": "CLI / examples", "Responsibility": "Reproducible batch execution for SoftwareX reviewers and users"},
-            {"Layer": "Streamlit app", "Responsibility": "Interactive module inspection, case simulation, evidence review, sensitivity testing"},
+            {
+                "Layer": "JSON disease modules",
+                "Responsibility": "Input nodes, derived nodes, target diseases, edges, beta values, evidence metadata",
+            },
+            {
+                "Layer": "bayesseed core engine",
+                "Responsibility": "Schema validation, derived-node evaluation, logistic CPD inference, sensitivity analysis",
+            },
+            {
+                "Layer": "CLI / examples",
+                "Responsibility": "Reproducible batch execution for SoftwareX reviewers and users",
+            },
+            {
+                "Layer": "Streamlit app",
+                "Responsibility": "Interactive module inspection, case simulation, evidence review, sensitivity testing",
+            },
         ]
     )
     st_dataframe(arch_df)
@@ -527,7 +538,9 @@ with tab_module:
     st_dataframe(edge_df, height=360)
 
     st.markdown("#### Mermaid network code")
-    st.caption("Copy this block into a Mermaid-enabled Markdown viewer to render the module diagram.")
+    st.caption(
+        "Copy this block into a Mermaid-enabled Markdown viewer to render the module diagram."
+    )
     st.code(to_mermaid(selected_module), language="mermaid")
 
     st.markdown("#### Raw JSON module")
@@ -613,7 +626,12 @@ with tab_case:
                         result_df,
                         x="disease",
                         y="posterior",
-                        hover_data=["module_id", "disease_id", "intercept", "observed_parent_count"],
+                        hover_data=[
+                            "module_id",
+                            "disease_id",
+                            "intercept",
+                            "observed_parent_count",
+                        ],
                         title="Posterior probabilities",
                     )
                     fig.update_yaxes(range=[0, 1])
@@ -641,7 +659,9 @@ with tab_case:
 # -----------------------------------------------------------------------------
 with tab_evidence:
     st.markdown("### Edge-level evidence table")
-    st.caption("This table is loaded from the evidence CSV/JSON when available; otherwise it is reconstructed from module edge metadata.")
+    st.caption(
+        "This table is loaded from the evidence CSV/JSON when available; otherwise it is reconstructed from module edge metadata."
+    )
 
     if evidence_df.empty:
         st.info("No evidence table found.")
@@ -650,29 +670,41 @@ with tab_evidence:
         cols = st.columns(4)
         module_col = "disease_module" if "disease_module" in filtered.columns else "module_id"
         strength_col = "evidence_strength" if "evidence_strength" in filtered.columns else None
-        placement_col = "recommended_placement" if "recommended_placement" in filtered.columns else "placement" if "placement" in filtered.columns else None
+        placement_col = (
+            "recommended_placement"
+            if "recommended_placement" in filtered.columns
+            else "placement" if "placement" in filtered.columns else None
+        )
         direction_col = "edge_direction" if "edge_direction" in filtered.columns else None
 
         if module_col in filtered.columns:
-            module_values = ["All"] + sorted(filtered[module_col].dropna().astype(str).unique().tolist())
+            module_values = ["All"] + sorted(
+                filtered[module_col].dropna().astype(str).unique().tolist()
+            )
             selected_module_filter = cols[0].selectbox("Module", module_values)
             if selected_module_filter != "All":
                 filtered = filtered[filtered[module_col].astype(str) == selected_module_filter]
 
         if strength_col:
-            strength_values = ["All"] + sorted(filtered[strength_col].dropna().astype(str).unique().tolist())
+            strength_values = ["All"] + sorted(
+                filtered[strength_col].dropna().astype(str).unique().tolist()
+            )
             selected_strength = cols[1].selectbox("Evidence strength", strength_values)
             if selected_strength != "All":
                 filtered = filtered[filtered[strength_col].astype(str) == selected_strength]
 
         if placement_col:
-            placement_values = ["All"] + sorted(filtered[placement_col].dropna().astype(str).unique().tolist())
+            placement_values = ["All"] + sorted(
+                filtered[placement_col].dropna().astype(str).unique().tolist()
+            )
             selected_placement = cols[2].selectbox("Placement", placement_values)
             if selected_placement != "All":
                 filtered = filtered[filtered[placement_col].astype(str) == selected_placement]
 
         if direction_col:
-            direction_values = ["All"] + sorted(filtered[direction_col].dropna().astype(str).unique().tolist())
+            direction_values = ["All"] + sorted(
+                filtered[direction_col].dropna().astype(str).unique().tolist()
+            )
             selected_direction = cols[3].selectbox("Direction", direction_values)
             if selected_direction != "All":
                 filtered = filtered[filtered[direction_col].astype(str) == selected_direction]
@@ -680,7 +712,9 @@ with tab_evidence:
         query = st.text_input("Search evidence text or node IDs", value="")
         if query.strip():
             q = query.strip().lower()
-            mask = filtered.apply(lambda row: q in " ".join(row.astype(str).str.lower().tolist()), axis=1)
+            mask = filtered.apply(
+                lambda row: q in " ".join(row.astype(str).str.lower().tolist()), axis=1
+            )
             filtered = filtered[mask]
 
         st_dataframe(filtered, height=520)
@@ -697,19 +731,27 @@ with tab_evidence:
 # -----------------------------------------------------------------------------
 with tab_sensitivity:
     st.markdown("### One-way sensitivity analysis")
-    st.caption("Change one beta coefficient over its configured range and inspect posterior changes.")
+    st.caption(
+        "Change one beta coefficient over its configured range and inspect posterior changes."
+    )
 
     if not sensitivity_items:
-        st.info("No sensitivity configuration found. Provide `default_modules/sensitivity_ranges.json` or set BAYESSEED_SENSITIVITY.")
+        st.info(
+            "No sensitivity configuration found. Provide `default_modules/sensitivity_ranges.json` or set BAYESSEED_SENSITIVITY."
+        )
     else:
         sensitivity_df = pd.DataFrame(sensitivity_items)
-        available_module_ids = sorted(sensitivity_df["module_id"].dropna().astype(str).unique().tolist())
+        available_module_ids = sorted(
+            sensitivity_df["module_id"].dropna().astype(str).unique().tolist()
+        )
         selected_sens_module_id = st.selectbox("Module", available_module_ids)
         sens_module = module_ids.get(selected_sens_module_id)
         if sens_module is None:
             st.error(f"Loaded modules do not include `{selected_sens_module_id}`.")
         else:
-            module_items = [x for x in sensitivity_items if str(x.get("module_id")) == selected_sens_module_id]
+            module_items = [
+                x for x in sensitivity_items if str(x.get("module_id")) == selected_sens_module_id
+            ]
             edge_labels = {
                 f"{item.get('edge_id')} · {item.get('from_node')} → {item.get('to_node')}": item
                 for item in module_items
@@ -726,7 +768,9 @@ with tab_sensitivity:
                     preset_options = [str(x) for x in cases_df["case_id"].tolist()]
                 else:
                     preset_options = [f"Case {i}" for i in range(1, len(cases_df) + 1)]
-                sens_preset = st.selectbox("Case for sensitivity analysis", preset_options, key="sens_preset")
+                sens_preset = st.selectbox(
+                    "Case for sensitivity analysis", preset_options, key="sens_preset"
+                )
                 sens_case = case_from_preset(cases_df, sens_preset)
             else:
                 st.warning("No synthetic case file found; using an empty case.")

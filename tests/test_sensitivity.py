@@ -28,7 +28,11 @@ def test_one_way_sensitivity_returns_rows_for_each_beta_and_target(bppv_module_p
     module = load_module(bppv_module_path)
     rows = one_way_sensitivity(
         module,
-        {"positional_trigger": 1, "brief_duration_seconds_minutes": 1, "negative_positional_test": 1},
+        {
+            "positional_trigger": 1,
+            "brief_duration_seconds_minutes": 1,
+            "negative_positional_test": 1,
+        },
         edge_id="bppv_e10",
         beta_values=[0.0, -0.3, -0.7],
     )

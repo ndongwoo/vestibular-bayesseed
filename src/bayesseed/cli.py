@@ -7,7 +7,7 @@ from pathlib import Path
 
 import click
 
-from .inference import batch_infer, infer_case, read_case_file
+from .inference import batch_infer, infer_case
 from .module_loader import load_module, load_modules
 from .schema_validation import validate_module
 from .visualization import to_mermaid
@@ -42,7 +42,9 @@ def validate_cmd(paths: tuple[Path, ...]) -> None:
 
 
 @main.command("list-modules")
-@click.option("--modules", "module_path", required=True, type=click.Path(exists=True, path_type=Path))
+@click.option(
+    "--modules", "module_path", required=True, type=click.Path(exists=True, path_type=Path)
+)
 def list_modules_cmd(module_path: Path) -> None:
     """List loadable disease modules in a directory."""
     modules = load_modules(module_path)
@@ -52,7 +54,9 @@ def list_modules_cmd(module_path: Path) -> None:
 
 
 @main.command("run")
-@click.option("--modules", "module_path", required=True, type=click.Path(exists=True, path_type=Path))
+@click.option(
+    "--modules", "module_path", required=True, type=click.Path(exists=True, path_type=Path)
+)
 @click.option("--case-file", required=True, type=click.Path(exists=True, path_type=Path))
 @click.option("--output", type=click.Path(path_type=Path), help="Optional JSON output path.")
 @click.option("--pretty/--compact", default=True, help="Pretty-print JSON to stdout.")
@@ -89,7 +93,9 @@ def run_cmd(
 
 
 @main.command("run-one")
-@click.option("--modules", "module_path", required=True, type=click.Path(exists=True, path_type=Path))
+@click.option(
+    "--modules", "module_path", required=True, type=click.Path(exists=True, path_type=Path)
+)
 @click.option(
     "--derived-mode",
     type=click.Choice(["threshold", "probability", "centered_probability"]),
@@ -98,7 +104,9 @@ def run_cmd(
 )
 @click.option("--derived-threshold", default=0.5, show_default=True, type=float)
 @click.argument("case_json", type=str)
-def run_one_cmd(module_path: Path, case_json: str, derived_mode: str, derived_threshold: float) -> None:
+def run_one_cmd(
+    module_path: Path, case_json: str, derived_mode: str, derived_threshold: float
+) -> None:
     """Run one inline JSON case, e.g. '{"positional_trigger": 1}'."""
     case = json.loads(case_json)
     result = infer_case(

@@ -98,7 +98,9 @@ def evaluate_derived_nodes(
             elif value_mode == "centered_probability":
                 downstream_value = max(0.0, probability - threshold) / max(1e-12, 1.0 - threshold)
             else:
-                raise InferenceError("value_mode must be one of: threshold, probability, centered_probability")
+                raise InferenceError(
+                    "value_mode must be one of: threshold, probability, centered_probability"
+                )
 
             derived_values[node_id] = downstream_value
             values[node_id] = downstream_value

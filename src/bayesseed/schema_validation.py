@@ -42,7 +42,9 @@ def _ids(items: list[Mapping[str, Any]], label: str) -> set[str]:
             raise ModuleValidationError(f"Every {label} entry must be an object.")
         missing = REQUIRED_NODE_FIELDS - set(item)
         if missing:
-            raise ModuleValidationError(f"{label} entry is missing required field(s): {sorted(missing)}")
+            raise ModuleValidationError(
+                f"{label} entry is missing required field(s): {sorted(missing)}"
+            )
         node_id = str(item["id"])
         if node_id in out:
             raise ModuleValidationError(f"Duplicate {label} id: {node_id}")
@@ -102,7 +104,9 @@ def validate_module(module: Mapping[str, Any], *, strict_edges: bool = True) -> 
             raise ModuleValidationError("Every edge entry must be an object.")
         missing_edge = REQUIRED_EDGE_FIELDS - set(edge)
         if missing_edge:
-            raise ModuleValidationError(f"Edge is missing required field(s): {sorted(missing_edge)}")
+            raise ModuleValidationError(
+                f"Edge is missing required field(s): {sorted(missing_edge)}"
+            )
         edge_id = str(edge["id"])
         if edge_id in edge_ids:
             raise ModuleValidationError(f"Duplicate edge id: {edge_id}")
@@ -112,7 +116,9 @@ def validate_module(module: Mapping[str, Any], *, strict_edges: bool = True) -> 
             from_node = str(edge["from_node"])
             to_node = str(edge["to_node"])
             if from_node not in all_node_ids:
-                raise ModuleValidationError(f"Edge '{edge_id}' has unknown from_node '{from_node}'.")
+                raise ModuleValidationError(
+                    f"Edge '{edge_id}' has unknown from_node '{from_node}'."
+                )
             if to_node not in all_node_ids:
                 raise ModuleValidationError(f"Edge '{edge_id}' has unknown to_node '{to_node}'.")
 

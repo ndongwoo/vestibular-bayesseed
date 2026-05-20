@@ -50,3 +50,4 @@ Thumbs.db
 outputs/
 local_data/
 *.log
+examples/output/

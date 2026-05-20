@@ -14,7 +14,9 @@ def test_edge_weights_for_node_returns_parent_betas(bppv_module_path: Path) -> N
     assert weights["dix_hallpike_torsional_upbeating_nystagmus"] == pytest.approx(2.2)
 
 
-def test_bppv_posterior_canal_pattern_activates_with_typical_nystagmus(bppv_module_path: Path) -> None:
+def test_bppv_posterior_canal_pattern_activates_with_typical_nystagmus(
+    bppv_module_path: Path,
+) -> None:
     module = load_module(bppv_module_path)
     values, trace = evaluate_derived_nodes(
         module,

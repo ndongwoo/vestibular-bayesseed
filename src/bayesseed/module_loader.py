@@ -37,7 +37,9 @@ def is_probable_module(data: dict[str, Any]) -> bool:
     return all(k in data for k in ("module_id", "target_diseases", "edges"))
 
 
-def load_modules(path: str | Path, *, validate: bool = True, strict: bool = False) -> list[dict[str, Any]]:
+def load_modules(
+    path: str | Path, *, validate: bool = True, strict: bool = False
+) -> list[dict[str, Any]]:
     """Load disease modules from a file or directory.
 
     Non-module JSON files such as schemas or sensitivity configuration files are

@@ -6,7 +6,7 @@ it is not a validated clinical decision-support system.
 """
 
 from .inference import infer_case, infer_module, infer_modules
-from .logistic_cpd import logit, sigmoid, logistic_probability
+from .logistic_cpd import logistic_probability, logit, sigmoid
 from .module_loader import load_module, load_modules
 from .schema_validation import validate_module
 

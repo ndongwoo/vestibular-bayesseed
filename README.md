@@ -163,7 +163,7 @@ bayesseed validate default_modules/bppv.json
 Run inference from a CSV file of synthetic cases:
 
 ```bash
-bayesseed run examples/synthetic_cases.csv --modules default_modules/
+bayesseed run --case-file examples/synthetic_cases.csv --modules default_modules/
 ```
 
 Launch the optional Streamlit demonstration app:

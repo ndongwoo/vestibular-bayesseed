@@ -29,7 +29,9 @@ from typing import Any
 try:
     import pandas as pd
 except ImportError as exc:  # pragma: no cover
-    raise SystemExit("pandas is required. Install project dependencies first: pip install -e .") from exc
+    raise SystemExit(
+        "pandas is required. Install project dependencies first: pip install -e ."
+    ) from exc
 
 # Allow running directly from a source checkout without installation.
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -39,7 +41,6 @@ if SRC_DIR.exists() and str(SRC_DIR) not in sys.path:
 
 from bayesseed.inference import infer_modules, read_case_file  # noqa: E402
 from bayesseed.module_loader import load_modules  # noqa: E402
-
 
 CASE_DESCRIPTIONS: list[dict[str, str]] = [
     {
@@ -94,16 +95,20 @@ def _is_missing(value: Any) -> bool:
     """Return True for values that should not be treated as observed inputs."""
     if value is None:
         return True
-    if isinstance(value, float) and math.isnan(value):
-        return True
-    if isinstance(value, str) and value.strip() == "":
-        return True
-    return False
+    return (
+        isinstance(value, float)
+        and math.isnan(value)
+        or (isinstance(value, str) and value.strip() == "")
+    )
 
 
 def _case_inputs_only(case: dict[str, Any], input_node_ids: set[str]) -> dict[str, Any]:
     """Keep only model input nodes and drop missing cells for cleaner output."""
-    return {key: value for key, value in case.items() if key in input_node_ids and not _is_missing(value)}
+    return {
+        key: value
+        for key, value in case.items()
+        if key in input_node_ids and not _is_missing(value)
+    }
 
 
 def _format_contributors(contributions: dict[str, float], *, limit: int = 5) -> str:
@@ -138,11 +143,15 @@ def run_examples(
     detailed_outputs: list[dict[str, Any]] = []
 
     for idx, raw_case in enumerate(cases, start=1):
-        manifest = CASE_DESCRIPTIONS[idx - 1] if idx <= len(CASE_DESCRIPTIONS) else {
-            "case_id": f"case_{idx:02d}",
-            "expected_pattern": "not specified",
-            "description": "No built-in description available.",
-        }
+        manifest = (
+            CASE_DESCRIPTIONS[idx - 1]
+            if idx <= len(CASE_DESCRIPTIONS)
+            else {
+                "case_id": f"case_{idx:02d}",
+                "expected_pattern": "not specified",
+                "description": "No built-in description available.",
+            }
+        )
         case = _case_inputs_only(raw_case, input_node_ids)
         module_results = infer_modules(
             modules,
@@ -184,7 +193,9 @@ def run_examples(
                     "posterior": round(float(disease_row["posterior"]), 6),
                     "module_id": disease_row["module_id"],
                     "parents_observed": ";".join(disease_row.get("parents_observed", [])),
-                    "top_log_odds_contributors": _format_contributors(disease_row.get("contributions", {})),
+                    "top_log_odds_contributors": _format_contributors(
+                        disease_row.get("contributions", {})
+                    ),
                 }
             )
 
@@ -193,13 +204,17 @@ def run_examples(
     summary_csv = output_dir / "synthetic_case_results_summary.csv"
     details_json = output_dir / "synthetic_case_results_detailed.json"
     summary_df.to_csv(summary_csv, index=False)
-    details_json.write_text(json.dumps(detailed_outputs, ensure_ascii=False, indent=2), encoding="utf-8")
+    details_json.write_text(
+        json.dumps(detailed_outputs, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
 
     return summary_df, detailed_outputs
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Run Vestibular-BayesSeed synthetic example cases.")
+    parser = argparse.ArgumentParser(
+        description="Run Vestibular-BayesSeed synthetic example cases."
+    )
     parser.add_argument(
         "--modules",
         type=Path,
@@ -242,7 +257,14 @@ def main() -> None:
 
     # Show top-ranked result for each synthetic case in the terminal.
     top1 = summary_df[summary_df["rank"] == 1][
-        ["case_index", "case_id", "expected_pattern", "disease_name", "posterior", "top_log_odds_contributors"]
+        [
+            "case_index",
+            "case_id",
+            "expected_pattern",
+            "disease_name",
+            "posterior",
+            "top_log_odds_contributors",
+        ]
     ]
     print("\nTop-ranked disease for each synthetic case")
     print(top1.to_string(index=False))

@@ -2,10 +2,12 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import pytest
-
-from bayesseed.inference import batch_infer, infer_case, infer_module, normalize_case_values, read_case_file
-from bayesseed.module_loader import load_module, load_modules
+from bayesseed.inference import (
+    batch_infer,
+    infer_case,
+    normalize_case_values,
+    read_case_file,
+)
 
 
 def _top_disease(result: dict) -> dict:
@@ -94,10 +96,15 @@ def test_bvp_competing_case_ranks_bvp_above_pvp(default_modules_dir: Path) -> No
         },
     )
     disease = {row["disease_id"]: row for row in result["disease_results"]}
-    assert disease["dx_bilateral_vestibulopathy"]["posterior"] > disease["dx_presbyvestibulopathy"]["posterior"]
+    assert (
+        disease["dx_bilateral_vestibulopathy"]["posterior"]
+        > disease["dx_presbyvestibulopathy"]["posterior"]
+    )
 
 
-def test_read_case_file_and_batch_infer_synthetic_cases(default_modules_dir: Path, examples_dir: Path) -> None:
+def test_read_case_file_and_batch_infer_synthetic_cases(
+    default_modules_dir: Path, examples_dir: Path
+) -> None:
     cases = read_case_file(examples_dir / "synthetic_cases.csv")
     assert len(cases) == 9
     outputs = batch_infer(default_modules_dir, examples_dir / "synthetic_cases.csv")
