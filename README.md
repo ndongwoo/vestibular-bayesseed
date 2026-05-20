@@ -70,7 +70,7 @@ The framework emphasizes placing most of the evidence weight on **raw input → 
 
 ---
 
-## Planned repository structure
+## Repository structure
 
 ```text
 vestibular-bayesseed/
@@ -79,22 +79,36 @@ vestibular-bayesseed/
 ├── CITATION.cff
 ├── pyproject.toml
 ├── requirements.txt
+├── .github/
+│   └── workflows/
+│       └── tests.yml
+├── .gitignore
 ├── default_modules/
+│   ├── README.md
 │   ├── bppv.json
 │   ├── meniere_disease.json
 │   ├── pvp_bvp.json
 │   ├── sensitivity_ranges.json
-│   └── module_schema_draft.json
+│   ├── module_schema_draft.json
+│   ├── node_dictionary.json
+│   └── stage_config.json
 ├── docs/
+│   ├── README.md
 │   ├── overview.md
 │   ├── node_taxonomy.md
 │   ├── evidence_to_parameter_mapping.md
 │   ├── adding_new_disease_module.md
 │   ├── default_modules.md
 │   ├── sensitivity_analysis.md
-│   └── medical_disclaimer.md
+│   ├── medical_disclaimer.md
+│   ├── api_reference.md
+│   ├── cli_reference.md
+│   ├── repository_assembly.md
+│   ├── softwarex_user_guide.md
+│   └── streamlit_demo.md
 ├── src/
 │   └── bayesseed/
+│       ├── CORE_ENGINE_README.md
 │       ├── __init__.py
 │       ├── logistic_cpd.py
 │       ├── module_loader.py
@@ -103,21 +117,36 @@ vestibular-bayesseed/
 │       ├── schema_validation.py
 │       ├── sensitivity.py
 │       ├── visualization.py
-│       └── cli.py
+│       ├── cli.py
+│       ├── exceptions.py
+│       └── py.typed
 ├── examples/
 │   ├── synthetic_cases.csv
-│   ├── run_examples.py
-│   ├── example_bppv_case.json
-│   ├── example_md_case.json
-│   └── example_pvp_case.json
+│   └── run_examples.py
 ├── app/
 │   └── streamlit_app.py
-└── tests/
-    ├── test_logistic_cpd.py
-    ├── test_module_loader.py
-    ├── test_schema_validation.py
-    ├── test_derived_nodes.py
-    └── test_inference_examples.py
+├── tests/
+│   ├── README.md
+│   ├── conftest.py
+│   ├── test_cli.py
+│   ├── test_derived_nodes.py
+│   ├── test_inference_examples.py
+│   ├── test_logistic_cpd.py
+│   ├── test_module_loader.py
+│   ├── test_schema_validation.py
+│   ├── test_sensitivity.py
+│   └── test_visualization.py
+├── templates/
+│   └── template_new_disease.json
+└── paper/
+    ├── README.md
+    ├── manuscript.md
+    ├── graphical_abstract_caption.md
+    ├── highlights.md
+    ├── softwarex_metadata_table.md
+    ├── figures/
+    ├── tables/
+    └── supplementary/
 ```
 
 ---
@@ -287,7 +316,7 @@ mypy src
 
 ## Citation
 
-A `CITATION.cff` file should be included in the repository once the first release is created. If the software is archived through Zenodo, cite the versioned DOI in addition to the related paper.
+This project includes a `CITATION.cff` file so that it can be cited directly via tools that support the Citation File Format. If the software is archived through Zenodo, cite the versioned DOI in addition to the related paper.
 
 ---
 
