@@ -1,0 +1,779 @@
+{
+  "schema_version": "0.1.0",
+  "created": "2026-05-20",
+  "description": "Stagewise evidence-availability configuration for Vestibular-BayesSeed default modules.",
+  "intended_use": "Research and educational demonstration only; not a validated clinical decision-support system.",
+  "stage_order": [
+    "history",
+    "bedside",
+    "audiometry",
+    "vestibular_test",
+    "imaging"
+  ],
+  "stages": [
+    {
+      "id": "history",
+      "order": 1,
+      "display_name": "History / demographics",
+      "description": "Information typically available from initial history, symptom timing/triggers, comorbidity, and demographics."
+    },
+    {
+      "id": "bedside",
+      "order": 2,
+      "display_name": "Bedside examination",
+      "description": "Positional testing, observed nystagmus patterns, bedside neurologic red flags, and other examination findings."
+    },
+    {
+      "id": "audiometry",
+      "order": 3,
+      "display_name": "Audiometry",
+      "description": "Audiometric evidence such as low-/mid-frequency sensorineural hearing loss."
+    },
+    {
+      "id": "vestibular_test",
+      "order": 4,
+      "display_name": "Vestibular laboratory testing",
+      "description": "vHIT, caloric, rotary-chair, VEMP, ECoG, or other vestibular laboratory evidence."
+    },
+    {
+      "id": "imaging",
+      "order": 5,
+      "display_name": "Imaging / advanced evidence",
+      "description": "MRI hydrops evidence, central MRI lesion evidence, and late-stage adjudication evidence."
+    }
+  ],
+  "stage_aliases": {
+    "demographics": "history",
+    "history_only": "history",
+    "physical_exam": "bedside",
+    "positional_testing": "bedside",
+    "hearing_test": "audiometry",
+    "vestibular_lab": "vestibular_test",
+    "mri": "imaging"
+  },
+  "special_composite_nodes": {
+    "central_neurologic_sign_or_central_mri_lesion": {
+      "primary_stage": "bedside_or_imaging",
+      "components": [
+        {
+          "component": "central neurologic sign",
+          "stage": "bedside"
+        },
+        {
+          "component": "central MRI lesion",
+          "stage": "imaging"
+        }
+      ],
+      "handling_note": "For strict stagewise experiments, split this composite into bedside central signs and imaging central lesion nodes; for the seed modules it is kept as a single cross-cutting competing-evidence node."
+    }
+  },
+  "node_stage_assignments": {
+    "age_ge_60": {
+      "node_type": "input",
+      "primary_stage": "history",
+      "available_from_stage": [
+        "history",
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "presbyvestibulopathy_with_bvp_competitor"
+      ]
+    },
+    "atypical_positional_nystagmus": {
+      "node_type": "input",
+      "primary_stage": "bedside",
+      "available_from_stage": [
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "bppv"
+      ]
+    },
+    "atypical_positional_red_flag": {
+      "node_type": "derived",
+      "primary_stage": "bedside",
+      "available_from_stage": [
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "bppv"
+      ]
+    },
+    "auditory_cluster": {
+      "node_type": "derived",
+      "primary_stage": "history",
+      "available_from_stage": [
+        "history",
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "meniere_disease"
+      ]
+    },
+    "aural_fullness": {
+      "node_type": "input",
+      "primary_stage": "history",
+      "available_from_stage": [
+        "history",
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "meniere_disease"
+      ]
+    },
+    "brief_duration_seconds_minutes": {
+      "node_type": "input",
+      "primary_stage": "history",
+      "available_from_stage": [
+        "history",
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "bppv"
+      ]
+    },
+    "brief_triggered_positional_syndrome": {
+      "node_type": "derived",
+      "primary_stage": "history",
+      "available_from_stage": [
+        "history",
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "bppv"
+      ]
+    },
+    "central_neurologic_sign_or_central_mri_lesion": {
+      "node_type": "input",
+      "primary_stage": "bedside_or_imaging",
+      "available_from_stage": [
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "bppv",
+        "meniere_disease",
+        "presbyvestibulopathy_with_bvp_competitor"
+      ]
+    },
+    "chronic_dizziness_gt_3months": {
+      "node_type": "input",
+      "primary_stage": "history",
+      "available_from_stage": [
+        "history",
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "presbyvestibulopathy_with_bvp_competitor"
+      ]
+    },
+    "chronic_vestibular_course": {
+      "node_type": "derived",
+      "primary_stage": "history",
+      "available_from_stage": [
+        "history",
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "presbyvestibulopathy_with_bvp_competitor"
+      ]
+    },
+    "dix_hallpike_torsional_upbeating_nystagmus": {
+      "node_type": "input",
+      "primary_stage": "bedside",
+      "available_from_stage": [
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "bppv"
+      ]
+    },
+    "duration_20min_to_12h": {
+      "node_type": "input",
+      "primary_stage": "history",
+      "available_from_stage": [
+        "history",
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "meniere_disease"
+      ]
+    },
+    "dx_bilateral_vestibulopathy": {
+      "node_type": "target_disease",
+      "primary_stage": "vestibular_test",
+      "available_from_stage": [
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "presbyvestibulopathy_with_bvp_competitor"
+      ]
+    },
+    "dx_bppv": {
+      "node_type": "target_disease",
+      "primary_stage": "bedside",
+      "available_from_stage": [
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "bppv"
+      ]
+    },
+    "dx_meniere_disease": {
+      "node_type": "target_disease",
+      "primary_stage": "imaging",
+      "available_from_stage": [
+        "imaging"
+      ],
+      "modules": [
+        "meniere_disease"
+      ]
+    },
+    "dx_presbyvestibulopathy": {
+      "node_type": "target_disease",
+      "primary_stage": "vestibular_test",
+      "available_from_stage": [
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "presbyvestibulopathy_with_bvp_competitor"
+      ]
+    },
+    "endolymphatic_hydrops_evidence": {
+      "node_type": "derived",
+      "primary_stage": "imaging",
+      "available_from_stage": [
+        "imaging"
+      ],
+      "modules": [
+        "meniere_disease"
+      ]
+    },
+    "episodic_vestibular_syndrome": {
+      "node_type": "derived",
+      "primary_stage": "history",
+      "available_from_stage": [
+        "history",
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "meniere_disease"
+      ]
+    },
+    "fluctuating_hearing_loss": {
+      "node_type": "input",
+      "primary_stage": "history",
+      "available_from_stage": [
+        "history",
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "meniere_disease"
+      ]
+    },
+    "gait_balance_symptom_burden": {
+      "node_type": "derived",
+      "primary_stage": "history",
+      "available_from_stage": [
+        "history",
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "presbyvestibulopathy_with_bvp_competitor"
+      ]
+    },
+    "gait_difficulty_imbalance_falls": {
+      "node_type": "input",
+      "primary_stage": "history",
+      "available_from_stage": [
+        "history",
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "presbyvestibulopathy_with_bvp_competitor"
+      ]
+    },
+    "horizontal_canal_positional_pattern": {
+      "node_type": "derived",
+      "primary_stage": "bedside",
+      "available_from_stage": [
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "bppv"
+      ]
+    },
+    "low_frequency_snhl": {
+      "node_type": "input",
+      "primary_stage": "audiometry",
+      "available_from_stage": [
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "meniere_disease"
+      ]
+    },
+    "migraine_features": {
+      "node_type": "input",
+      "primary_stage": "history",
+      "available_from_stage": [
+        "history",
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "meniere_disease"
+      ]
+    },
+    "migraine_overlap_pattern": {
+      "node_type": "derived",
+      "primary_stage": "history",
+      "available_from_stage": [
+        "history",
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "meniere_disease"
+      ]
+    },
+    "mild_bilateral_vestibular_hypofunction": {
+      "node_type": "input",
+      "primary_stage": "vestibular_test",
+      "available_from_stage": [
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "presbyvestibulopathy_with_bvp_competitor"
+      ]
+    },
+    "mild_bilateral_vestibular_hypofunction_node": {
+      "node_type": "derived",
+      "primary_stage": "vestibular_test",
+      "available_from_stage": [
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "presbyvestibulopathy_with_bvp_competitor"
+      ]
+    },
+    "mri_endolymphatic_hydrops": {
+      "node_type": "input",
+      "primary_stage": "imaging",
+      "available_from_stage": [
+        "imaging"
+      ],
+      "modules": [
+        "meniere_disease"
+      ]
+    },
+    "negative_positional_test": {
+      "node_type": "input",
+      "primary_stage": "bedside",
+      "available_from_stage": [
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "bppv"
+      ]
+    },
+    "no_objective_positional_nystagmus": {
+      "node_type": "derived",
+      "primary_stage": "bedside",
+      "available_from_stage": [
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "bppv"
+      ]
+    },
+    "non_central_chronic_vestibular_pattern": {
+      "node_type": "derived",
+      "primary_stage": "bedside",
+      "available_from_stage": [
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "presbyvestibulopathy_with_bvp_competitor"
+      ]
+    },
+    "objective_low_frequency_cochlear_pattern": {
+      "node_type": "derived",
+      "primary_stage": "audiometry",
+      "available_from_stage": [
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "meniere_disease"
+      ]
+    },
+    "oscillopsia_or_worse_darkness_uneven_ground": {
+      "node_type": "input",
+      "primary_stage": "history",
+      "available_from_stage": [
+        "history",
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "presbyvestibulopathy_with_bvp_competitor"
+      ]
+    },
+    "positional_trigger": {
+      "node_type": "input",
+      "primary_stage": "history",
+      "available_from_stage": [
+        "history",
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "bppv"
+      ]
+    },
+    "posterior_canal_positional_pattern": {
+      "node_type": "derived",
+      "primary_stage": "bedside",
+      "available_from_stage": [
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "bppv"
+      ]
+    },
+    "recurrent_spontaneous_episodes": {
+      "node_type": "input",
+      "primary_stage": "history",
+      "available_from_stage": [
+        "history",
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "meniere_disease"
+      ]
+    },
+    "severe_bilateral_vestibular_hypofunction": {
+      "node_type": "input",
+      "primary_stage": "vestibular_test",
+      "available_from_stage": [
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "presbyvestibulopathy_with_bvp_competitor"
+      ]
+    },
+    "severe_bilateral_vestibular_hypofunction_node": {
+      "node_type": "derived",
+      "primary_stage": "vestibular_test",
+      "available_from_stage": [
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "presbyvestibulopathy_with_bvp_competitor"
+      ]
+    },
+    "subjective_positional_pattern": {
+      "node_type": "derived",
+      "primary_stage": "bedside",
+      "available_from_stage": [
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "bppv"
+      ]
+    },
+    "subjective_positional_vertigo_only": {
+      "node_type": "input",
+      "primary_stage": "bedside",
+      "available_from_stage": [
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "bppv"
+      ]
+    },
+    "supine_roll_geotropic_or_apogeotropic_nystagmus": {
+      "node_type": "input",
+      "primary_stage": "bedside",
+      "available_from_stage": [
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "bppv"
+      ]
+    },
+    "tinnitus": {
+      "node_type": "input",
+      "primary_stage": "history",
+      "available_from_stage": [
+        "history",
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "meniere_disease"
+      ]
+    },
+    "vemp_ecog_hydrops_compatible": {
+      "node_type": "input",
+      "primary_stage": "vestibular_test",
+      "available_from_stage": [
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "meniere_disease"
+      ]
+    }
+  },
+  "inputs_by_primary_stage": {
+    "history": [
+      "age_ge_60",
+      "aural_fullness",
+      "brief_duration_seconds_minutes",
+      "chronic_dizziness_gt_3months",
+      "duration_20min_to_12h",
+      "fluctuating_hearing_loss",
+      "gait_difficulty_imbalance_falls",
+      "migraine_features",
+      "oscillopsia_or_worse_darkness_uneven_ground",
+      "positional_trigger",
+      "recurrent_spontaneous_episodes",
+      "tinnitus"
+    ],
+    "bedside": [
+      "atypical_positional_nystagmus",
+      "dix_hallpike_torsional_upbeating_nystagmus",
+      "negative_positional_test",
+      "subjective_positional_vertigo_only",
+      "supine_roll_geotropic_or_apogeotropic_nystagmus"
+    ],
+    "bedside_or_imaging": [
+      "central_neurologic_sign_or_central_mri_lesion"
+    ],
+    "audiometry": [
+      "low_frequency_snhl"
+    ],
+    "vestibular_test": [
+      "mild_bilateral_vestibular_hypofunction",
+      "severe_bilateral_vestibular_hypofunction",
+      "vemp_ecog_hydrops_compatible"
+    ],
+    "imaging": [
+      "mri_endolymphatic_hydrops"
+    ]
+  },
+  "cumulative_input_sets": {
+    "history": [
+      "age_ge_60",
+      "aural_fullness",
+      "brief_duration_seconds_minutes",
+      "chronic_dizziness_gt_3months",
+      "duration_20min_to_12h",
+      "fluctuating_hearing_loss",
+      "gait_difficulty_imbalance_falls",
+      "migraine_features",
+      "oscillopsia_or_worse_darkness_uneven_ground",
+      "positional_trigger",
+      "recurrent_spontaneous_episodes",
+      "tinnitus"
+    ],
+    "bedside": [
+      "age_ge_60",
+      "atypical_positional_nystagmus",
+      "aural_fullness",
+      "brief_duration_seconds_minutes",
+      "central_neurologic_sign_or_central_mri_lesion",
+      "chronic_dizziness_gt_3months",
+      "dix_hallpike_torsional_upbeating_nystagmus",
+      "duration_20min_to_12h",
+      "fluctuating_hearing_loss",
+      "gait_difficulty_imbalance_falls",
+      "migraine_features",
+      "negative_positional_test",
+      "oscillopsia_or_worse_darkness_uneven_ground",
+      "positional_trigger",
+      "recurrent_spontaneous_episodes",
+      "subjective_positional_vertigo_only",
+      "supine_roll_geotropic_or_apogeotropic_nystagmus",
+      "tinnitus"
+    ],
+    "audiometry": [
+      "age_ge_60",
+      "atypical_positional_nystagmus",
+      "aural_fullness",
+      "brief_duration_seconds_minutes",
+      "central_neurologic_sign_or_central_mri_lesion",
+      "chronic_dizziness_gt_3months",
+      "dix_hallpike_torsional_upbeating_nystagmus",
+      "duration_20min_to_12h",
+      "fluctuating_hearing_loss",
+      "gait_difficulty_imbalance_falls",
+      "low_frequency_snhl",
+      "migraine_features",
+      "negative_positional_test",
+      "oscillopsia_or_worse_darkness_uneven_ground",
+      "positional_trigger",
+      "recurrent_spontaneous_episodes",
+      "subjective_positional_vertigo_only",
+      "supine_roll_geotropic_or_apogeotropic_nystagmus",
+      "tinnitus"
+    ],
+    "vestibular_test": [
+      "age_ge_60",
+      "atypical_positional_nystagmus",
+      "aural_fullness",
+      "brief_duration_seconds_minutes",
+      "central_neurologic_sign_or_central_mri_lesion",
+      "chronic_dizziness_gt_3months",
+      "dix_hallpike_torsional_upbeating_nystagmus",
+      "duration_20min_to_12h",
+      "fluctuating_hearing_loss",
+      "gait_difficulty_imbalance_falls",
+      "low_frequency_snhl",
+      "migraine_features",
+      "mild_bilateral_vestibular_hypofunction",
+      "negative_positional_test",
+      "oscillopsia_or_worse_darkness_uneven_ground",
+      "positional_trigger",
+      "recurrent_spontaneous_episodes",
+      "severe_bilateral_vestibular_hypofunction",
+      "subjective_positional_vertigo_only",
+      "supine_roll_geotropic_or_apogeotropic_nystagmus",
+      "tinnitus",
+      "vemp_ecog_hydrops_compatible"
+    ],
+    "imaging": [
+      "age_ge_60",
+      "atypical_positional_nystagmus",
+      "aural_fullness",
+      "brief_duration_seconds_minutes",
+      "central_neurologic_sign_or_central_mri_lesion",
+      "chronic_dizziness_gt_3months",
+      "dix_hallpike_torsional_upbeating_nystagmus",
+      "duration_20min_to_12h",
+      "fluctuating_hearing_loss",
+      "gait_difficulty_imbalance_falls",
+      "low_frequency_snhl",
+      "migraine_features",
+      "mild_bilateral_vestibular_hypofunction",
+      "mri_endolymphatic_hydrops",
+      "negative_positional_test",
+      "oscillopsia_or_worse_darkness_uneven_ground",
+      "positional_trigger",
+      "recurrent_spontaneous_episodes",
+      "severe_bilateral_vestibular_hypofunction",
+      "subjective_positional_vertigo_only",
+      "supine_roll_geotropic_or_apogeotropic_nystagmus",
+      "tinnitus",
+      "vemp_ecog_hydrops_compatible"
+    ]
+  },
+  "derived_node_policy": {
+    "calculation": "Derived nodes are calculated from available parent values using their logistic CPD intercepts and edge weights.",
+    "missing_parent_policy": "Missing parents are ignored/unobserved, not set to 0 as negative evidence unless a specific negative input node is explicitly present.",
+    "default_downstream_propagation": "threshold",
+    "threshold": "A derived node is propagated as active when its posterior probability is >= 0.5; the engine can alternatively use soft probability propagation."
+  },
+  "diagnosis_node_policy": {
+    "intercept_warning": "Default disease-node intercepts are illustrative placeholders, not calibrated prevalence estimates.",
+    "recommended_use": "For validation studies, set intercepts by target clinical setting, referral pathway, and stage before locking the model."
+  }
+}

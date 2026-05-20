@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Vestibular-BayesSeed disease module schema draft",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "module_id",
+    "display_name",
+    "version",
+    "target_diseases",
+    "input_nodes",
+    "derived_nodes",
+    "edges"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string"
+    },
+    "module_id": {
+      "type": "string"
+    },
+    "display_name": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "target_diseases": {
+      "type": "array"
+    },
+    "input_nodes": {
+      "type": "array"
+    },
+    "derived_nodes": {
+      "type": "array"
+    },
+    "edges": {
+      "type": "array"
+    }
+  }
+}

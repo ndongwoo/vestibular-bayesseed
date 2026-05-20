@@ -1,0 +1,234 @@
+{
+  "schema_version": "0.1.0",
+  "description": "Priority sensitivity-analysis ranges for literature-informed default modules.",
+  "items": [
+    {
+      "module_id": "bppv",
+      "edge_id": "bppv_e05",
+      "from_node": "subjective_positional_vertigo_only",
+      "to_node": "subjective_positional_pattern",
+      "default_beta": 0.7,
+      "beta_range": [
+        0.3,
+        0.9
+      ],
+      "reason": "Sensitivity-analysis edge."
+    },
+    {
+      "module_id": "bppv",
+      "edge_id": "bppv_e06",
+      "from_node": "positional_trigger",
+      "to_node": "subjective_positional_pattern",
+      "default_beta": 0.6,
+      "beta_range": [
+        0.3,
+        0.8
+      ],
+      "reason": "Correlated with positional-history evidence."
+    },
+    {
+      "module_id": "bppv",
+      "edge_id": "bppv_e12",
+      "from_node": "subjective_positional_pattern",
+      "to_node": "dx_bppv",
+      "default_beta": 0.7,
+      "beta_range": [
+        0.2,
+        1.0
+      ],
+      "reason": "Sensitivity-analysis edge."
+    },
+    {
+      "module_id": "bppv",
+      "edge_id": "bppv_e13",
+      "from_node": "atypical_positional_red_flag",
+      "to_node": "dx_bppv",
+      "default_beta": -1.2,
+      "beta_range": [
+        -1.8,
+        -0.7
+      ],
+      "reason": "Increase negativity if central signs co-occur."
+    },
+    {
+      "module_id": "bppv",
+      "edge_id": "bppv_e14",
+      "from_node": "no_objective_positional_nystagmus",
+      "to_node": "dx_bppv",
+      "default_beta": -0.3,
+      "beta_range": [
+        -0.7,
+        -0.1
+      ],
+      "reason": "Keep deliberately weak."
+    },
+    {
+      "module_id": "bppv",
+      "edge_id": "bppv_e15",
+      "from_node": "central_neurologic_sign_or_central_mri_lesion",
+      "to_node": "dx_bppv",
+      "default_beta": -1.8,
+      "beta_range": [
+        -2.3,
+        -1.2
+      ],
+      "reason": "Strong negative edge."
+    },
+    {
+      "module_id": "meniere_disease",
+      "edge_id": "md_e07",
+      "from_node": "objective_low_frequency_cochlear_pattern",
+      "to_node": "endolymphatic_hydrops_evidence",
+      "default_beta": 0.5,
+      "beta_range": [
+        0.2,
+        0.8
+      ],
+      "reason": "Keep modest to avoid double counting."
+    },
+    {
+      "module_id": "meniere_disease",
+      "edge_id": "md_e08",
+      "from_node": "mri_endolymphatic_hydrops",
+      "to_node": "endolymphatic_hydrops_evidence",
+      "default_beta": 1.6,
+      "beta_range": [
+        1.1,
+        1.9
+      ],
+      "reason": "Strongest hydropic-test edge."
+    },
+    {
+      "module_id": "meniere_disease",
+      "edge_id": "md_e09",
+      "from_node": "vemp_ecog_hydrops_compatible",
+      "to_node": "endolymphatic_hydrops_evidence",
+      "default_beta": 0.8,
+      "beta_range": [
+        0.4,
+        1.2
+      ],
+      "reason": "Use wide prior."
+    },
+    {
+      "module_id": "meniere_disease",
+      "edge_id": "md_e10",
+      "from_node": "migraine_features",
+      "to_node": "migraine_overlap_pattern",
+      "default_beta": 0.7,
+      "beta_range": [
+        0.4,
+        1.0
+      ],
+      "reason": "Downstream edge is weakly negative to MD."
+    },
+    {
+      "module_id": "meniere_disease",
+      "edge_id": "md_e14",
+      "from_node": "endolymphatic_hydrops_evidence",
+      "to_node": "dx_meniere_disease",
+      "default_beta": 1.1,
+      "beta_range": [
+        0.6,
+        1.6
+      ],
+      "reason": "Do not let hydropic tests override clinical criteria."
+    },
+    {
+      "module_id": "meniere_disease",
+      "edge_id": "md_e15",
+      "from_node": "migraine_overlap_pattern",
+      "to_node": "dx_meniere_disease",
+      "default_beta": -0.5,
+      "beta_range": [
+        -0.8,
+        -0.2
+      ],
+      "reason": "Essential sensitivity-analysis edge."
+    },
+    {
+      "module_id": "meniere_disease",
+      "edge_id": "md_e16",
+      "from_node": "central_neurologic_sign_or_central_mri_lesion",
+      "to_node": "dx_meniere_disease",
+      "default_beta": -1.3,
+      "beta_range": [
+        -1.8,
+        -0.8
+      ],
+      "reason": "Mainly criteria/differential-based."
+    },
+    {
+      "module_id": "presbyvestibulopathy_with_bvp_competitor",
+      "edge_id": "pvp_e03",
+      "from_node": "oscillopsia_or_worse_darkness_uneven_ground",
+      "to_node": "gait_balance_symptom_burden",
+      "default_beta": 0.6,
+      "beta_range": [
+        0.3,
+        0.9
+      ],
+      "reason": "Sensitivity-analysis edge."
+    },
+    {
+      "module_id": "presbyvestibulopathy_with_bvp_competitor",
+      "edge_id": "pvp_e08",
+      "from_node": "central_neurologic_sign_or_central_mri_lesion",
+      "to_node": "non_central_chronic_vestibular_pattern",
+      "default_beta": -1.5,
+      "beta_range": [
+        -2.0,
+        -1.0
+      ],
+      "reason": "Broad range; mainly criteria/expert-based."
+    },
+    {
+      "module_id": "presbyvestibulopathy_with_bvp_competitor",
+      "edge_id": "pvp_e12",
+      "from_node": "mild_bilateral_vestibular_hypofunction_node",
+      "to_node": "dx_presbyvestibulopathy",
+      "default_beta": 1.6,
+      "beta_range": [
+        1.2,
+        2.0
+      ],
+      "reason": "Key edge."
+    },
+    {
+      "module_id": "presbyvestibulopathy_with_bvp_competitor",
+      "edge_id": "pvp_e14",
+      "from_node": "severe_bilateral_vestibular_hypofunction_node",
+      "to_node": "dx_bilateral_vestibulopathy",
+      "default_beta": 2.2,
+      "beta_range": [
+        1.8,
+        2.5
+      ],
+      "reason": "Strongest BVP edge."
+    },
+    {
+      "module_id": "presbyvestibulopathy_with_bvp_competitor",
+      "edge_id": "pvp_e15",
+      "from_node": "severe_bilateral_vestibular_hypofunction_node",
+      "to_node": "dx_presbyvestibulopathy",
+      "default_beta": -1.4,
+      "beta_range": [
+        -1.8,
+        -1.0
+      ],
+      "reason": "Important discriminator."
+    },
+    {
+      "module_id": "presbyvestibulopathy_with_bvp_competitor",
+      "edge_id": "pvp_e16",
+      "from_node": "central_neurologic_sign_or_central_mri_lesion",
+      "to_node": "dx_presbyvestibulopathy",
+      "default_beta": -1.2,
+      "beta_range": [
+        -1.7,
+        -0.8
+      ],
+      "reason": "Wider prior than BVP edge."
+    }
+  ]
+}

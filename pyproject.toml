@@ -1,0 +1,115 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vestibular-bayesseed"
+version = "0.1.0"
+description = "An open-source seed framework for evidence-anchored logistic Bayesian diagnostic networks in vestibular disorders."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+authors = [
+  { name = "Dongwoo Nam", email = "ndongwoo@gmail.com" }
+]
+maintainers = [
+  { name = "Dongwoo Nam", email = "ndongwoo@gmail.com" }
+]
+keywords = [
+  "bayesian-network",
+  "clinical-decision-support",
+  "vestibular-disorders",
+  "dizziness",
+  "logistic-cpd",
+  "evidence-anchored",
+  "knowledge-engineering"
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Science/Research",
+  "Intended Audience :: Healthcare Industry",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering :: Medical Science Apps.",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence"
+]
+dependencies = [
+  "numpy>=1.24",
+  "pandas>=2.0",
+  "pydantic>=2.5",
+  "jsonschema>=4.19",
+  "networkx>=3.1",
+  "matplotlib>=3.7",
+  "click>=8.1",
+  "rich>=13.0",
+  "pyyaml>=6.0"
+]
+
+[project.optional-dependencies]
+app = [
+  "streamlit>=1.32",
+  "plotly>=5.18"
+]
+dev = [
+  "pytest>=7.4",
+  "pytest-cov>=4.1",
+  "ruff>=0.3",
+  "black>=24.0",
+  "mypy>=1.8",
+  "jupyter>=1.0"
+]
+docs = [
+  "mkdocs>=1.5",
+  "mkdocs-material>=9.5"
+]
+all = [
+  "vestibular-bayesseed[app,dev,docs]"
+]
+
+[project.urls]
+Homepage = "https://github.com/ndongwoo/vestibular-bayesseed"
+Repository = "https://github.com/ndongwoo/vestibular-bayesseed"
+Issues = "https://github.com/ndongwoo/vestibular-bayesseed/issues"
+Documentation = "https://github.com/ndongwoo/vestibular-bayesseed/tree/main/docs"
+
+[project.scripts]
+bayesseed = "bayesseed.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["bayesseed*"]
+
+[tool.setuptools.package-data]
+bayesseed = ["py.typed"]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-q --strict-markers --strict-config"
+
+[tool.black]
+line-length = 100
+target-version = ["py310", "py311", "py312"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+src = ["src", "tests", "examples", "app"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = false
+warn_unused_configs = true
+warn_return_any = true
+warn_unused_ignores = true

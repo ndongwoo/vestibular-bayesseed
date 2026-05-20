@@ -1,0 +1,40 @@
+cff-version: 1.2.0
+message: "If you use Vestibular-BayesSeed in your research, please cite the software and the accompanying SoftwareX paper when available."
+title: "Vestibular-BayesSeed: An Open-Source Framework for Evidence-Anchored Logistic Bayesian Networks in Dizziness Diagnosis"
+version: "0.1.0"
+date-released: "2026-05-20"
+license: "Apache-2.0"
+repository-code: "https://github.com/ndongwoo/vestibular-bayesseed"
+url: "https://github.com/ndongwoo/vestibular-bayesseed"
+abstract: >-
+  Vestibular-BayesSeed is an open-source Python seed framework for constructing
+  evidence-anchored logistic Bayesian diagnostic networks using modular JSON
+  disease definitions. The package includes worked example modules for benign
+  paroxysmal positional vertigo, Ménière disease, and presbyvestibulopathy with
+  bilateral vestibulopathy as a competing threshold-based diagnosis. It is
+  intended for research, education, and methodological demonstration, not for
+  unvalidated clinical diagnosis or patient management.
+authors:
+  - family-names: "Nam"
+    given-names: "Dongwoo"
+    email: "ndongwoo@gmail.com"
+    affiliation: "Chungbuk National University Hospital"
+keywords:
+  - "Bayesian network"
+  - "logistic CPD"
+  - "clinical decision support"
+  - "vestibular disorders"
+  - "dizziness"
+  - "evidence-anchored modeling"
+  - "knowledge engineering"
+preferred-citation:
+  type: article
+  title: "Vestibular-BayesSeed: An Open-Source Framework for Evidence-Anchored Logistic Bayesian Networks in Dizziness Diagnosis"
+  authors:
+    - family-names: "Nam"
+      given-names: "Dongwoo"
+      email: "ndongwoo@gmail.com"
+      affiliation: "Chungbuk National University Hospital"
+  journal: "SoftwareX"
+  year: 2026
+  notes: "Manuscript in preparation; update DOI, volume, and page fields after publication."

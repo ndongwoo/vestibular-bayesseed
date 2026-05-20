@@ -1,0 +1,24 @@
+# Runtime dependencies for Vestibular-BayesSeed
+# Python >= 3.10 is recommended.
+
+numpy>=1.24
+pandas>=2.0
+pydantic>=2.5
+jsonschema>=4.19
+networkx>=3.1
+matplotlib>=3.7
+click>=8.1
+rich>=13.0
+pyyaml>=6.0
+
+# Optional interactive demonstration UI
+streamlit>=1.32
+plotly>=5.18
+
+# Development and reproducibility checks
+pytest>=7.4
+pytest-cov>=4.1
+ruff>=0.3
+black>=24.0
+mypy>=1.8
+jupyter>=1.0

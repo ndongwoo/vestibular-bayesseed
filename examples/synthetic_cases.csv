@@ -1,0 +1,10 @@
+positional_trigger,brief_duration_seconds_minutes,dix_hallpike_torsional_upbeating_nystagmus,supine_roll_geotropic_or_apogeotropic_nystagmus,subjective_positional_vertigo_only,atypical_positional_nystagmus,negative_positional_test,central_neurologic_sign_or_central_mri_lesion,recurrent_spontaneous_episodes,duration_20min_to_12h,fluctuating_hearing_loss,tinnitus,aural_fullness,low_frequency_snhl,mri_endolymphatic_hydrops,vemp_ecog_hydrops_compatible,migraine_features,age_ge_60,chronic_dizziness_gt_3months,gait_difficulty_imbalance_falls,oscillopsia_or_worse_darkness_uneven_ground,mild_bilateral_vestibular_hypofunction,severe_bilateral_vestibular_hypofunction
+1,1,1,,,,,0,,,,,,,,,,,,,,,
+1,1,,1,,,,0,,,,,,,,,,,,,,,
+1,,,,1,,1,0,,,,,,,,,,,,,,,
+1,,,,,1,,1,,,,,,,,,,,,,,,
+,,,,,,,0,1,1,1,1,1,1,1,,,,,,,,
+,,,,,,,0,1,1,1,1,1,,,,1,,,,,,
+,,,,,,,0,,,,,,,,,,1,1,1,,1,
+,,,,,,,0,,,,,,,,,,1,1,1,1,,1
+,,,,,,,0,1,1,,1,,1,,,,1,1,1,,1,

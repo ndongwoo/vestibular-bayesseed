@@ -1,0 +1,24 @@
+# Software metadata table
+
+Use this table to populate the SoftwareX metadata section. Replace all `TBD` fields before submission.
+
+| Metadata field | Value |
+|---|---|
+| Current code version | v0.1.0 |
+| Permanent link to code/repository used for this code version | TBD: Zenodo DOI or Software Heritage archive URL after release |
+| Permanent link to reproducible capsule | Not applicable / TBD if Code Ocean or Binder is added |
+| Legal code license | Apache License 2.0 |
+| Code versioning system used | git |
+| Software code languages, tools, and services used | Python, JSON, JSON Schema/Pydantic-style validation, NumPy, pandas, NetworkX, matplotlib, Click, Rich, Streamlit, pytest |
+| Compilation requirements, operating environments, and dependencies | Python >=3.10; operating-system independent; dependencies listed in `pyproject.toml` and `requirements.txt` |
+| Installation | `pip install -e .` from repository root; optional app dependencies with `pip install -e .[app]` |
+| Example execution | `python examples/run_examples.py`; `bayesseed validate default_modules/bppv.json`; `streamlit run app/streamlit_app.py` |
+| Link to developer documentation/manual | TBD: GitHub `docs/` URL |
+| Support email for questions | ndongwoo@gmail.com |
+| Repository URL | TBD: https://github.com/ndongwoo/vestibular-bayesseed |
+| Issue tracker | TBD: https://github.com/ndongwoo/vestibular-bayesseed/issues |
+| Documentation URL | TBD: https://github.com/ndongwoo/vestibular-bayesseed/tree/main/docs |
+| Example data availability | Synthetic cases included in `examples/synthetic_cases.csv`; no patient-level data included |
+| Intended use | Research, education, and methodological demonstration |
+| Explicit non-intended use | Not for clinical diagnosis, triage, treatment decisions, or patient management without validation and regulatory review |
+

@@ -1,0 +1,375 @@
+{
+  "schema_version": "0.1.0",
+  "created": "2026-05-20",
+  "intended_use": "Research and educational demonstration only; not a validated clinical decision-support system.",
+  "cpd_family": "binary logistic CPD",
+  "missingness_policy": "Unobserved inputs are treated as missing/unobserved, not as negative evidence unless a specific negative input node is set to 1.",
+  "coefficient_policy": {
+    "initialization_rule": "beta_init = clip(q * p * beta0, -2.5, +2.5)",
+    "beta0_sources": [
+      "ln(LR+)",
+      "ln(LR-)",
+      "ln(OR)",
+      "capped qualitative prior"
+    ],
+    "clip": [
+      -2.5,
+      2.5
+    ],
+    "note": "Default coefficients are literature-informed starting values, not clinically validated calibration parameters."
+  },
+  "module_id": "bppv",
+  "display_name": "Benign paroxysmal positional vertigo",
+  "version": "0.1.0",
+  "module_role": "Worked example for positional/nystagmus-driven vestibular diagnosis.",
+  "target_diseases": [
+    {
+      "id": "dx_bppv",
+      "display_name": "BPPV",
+      "intercept": -2.2,
+      "intercept_policy": "Placeholder specialty-clinic prior; configure by setting and stage before validation."
+    }
+  ],
+  "input_nodes": [
+    {
+      "id": "positional_trigger",
+      "type": "binary",
+      "label": "Vertigo/dizziness triggered by head position change"
+    },
+    {
+      "id": "brief_duration_seconds_minutes",
+      "type": "binary",
+      "label": "Brief attacks lasting seconds to minutes"
+    },
+    {
+      "id": "dix_hallpike_torsional_upbeating_nystagmus",
+      "type": "binary",
+      "label": "Dix-Hallpike torsional upbeating nystagmus"
+    },
+    {
+      "id": "supine_roll_geotropic_or_apogeotropic_nystagmus",
+      "type": "binary",
+      "label": "Supine roll geotropic/apogeotropic horizontal nystagmus"
+    },
+    {
+      "id": "subjective_positional_vertigo_only",
+      "type": "binary",
+      "label": "Subjective positional vertigo without observable nystagmus"
+    },
+    {
+      "id": "atypical_positional_nystagmus",
+      "type": "binary",
+      "label": "Atypical positional nystagmus pattern"
+    },
+    {
+      "id": "negative_positional_test",
+      "type": "binary",
+      "label": "No vertigo/nystagmus on positional testing"
+    },
+    {
+      "id": "central_neurologic_sign_or_central_mri_lesion",
+      "type": "binary",
+      "label": "Central neurologic sign or central MRI lesion"
+    }
+  ],
+  "derived_nodes": [
+    {
+      "id": "brief_triggered_positional_syndrome",
+      "type": "logistic",
+      "intercept": -1.2,
+      "parents": [
+        "positional_trigger",
+        "brief_duration_seconds_minutes"
+      ],
+      "description": "Broad BPPV-compatible triggered positional syndrome."
+    },
+    {
+      "id": "posterior_canal_positional_pattern",
+      "type": "logistic",
+      "intercept": -1.2,
+      "parents": [
+        "dix_hallpike_torsional_upbeating_nystagmus"
+      ],
+      "description": "Posterior-canal canal-specific positional nystagmus pattern."
+    },
+    {
+      "id": "horizontal_canal_positional_pattern",
+      "type": "logistic",
+      "intercept": -1.2,
+      "parents": [
+        "supine_roll_geotropic_or_apogeotropic_nystagmus"
+      ],
+      "description": "Horizontal-canal positional nystagmus pattern."
+    },
+    {
+      "id": "subjective_positional_pattern",
+      "type": "logistic",
+      "intercept": -1.3,
+      "parents": [
+        "subjective_positional_vertigo_only",
+        "positional_trigger"
+      ],
+      "description": "Subjective positional BPPV-like pattern without objective nystagmus."
+    },
+    {
+      "id": "atypical_positional_red_flag",
+      "type": "logistic",
+      "intercept": -1.2,
+      "parents": [
+        "atypical_positional_nystagmus"
+      ],
+      "description": "Red-flag positional pattern suggesting central or atypical alternative causes."
+    },
+    {
+      "id": "no_objective_positional_nystagmus",
+      "type": "logistic",
+      "intercept": -1.0,
+      "parents": [
+        "negative_positional_test"
+      ],
+      "description": "Absence of objective positional nystagmus; downstream effect is intentionally weak."
+    }
+  ],
+  "edges": [
+    {
+      "id": "bppv_e01",
+      "from_node": "positional_trigger",
+      "to_node": "brief_triggered_positional_syndrome",
+      "edge_direction": "supportive",
+      "suggested_beta": 0.9,
+      "suggested_beta_range": [
+        0.6,
+        1.1
+      ],
+      "placement": "raw_to_derived",
+      "evidence_basis": "Typical triggered positional history in BPPV criteria.",
+      "evidence_strength": "moderate",
+      "sensitivity_analysis": false,
+      "comments": "Common but not specific."
+    },
+    {
+      "id": "bppv_e02",
+      "from_node": "brief_duration_seconds_minutes",
+      "to_node": "brief_triggered_positional_syndrome",
+      "edge_direction": "supportive",
+      "suggested_beta": 0.8,
+      "suggested_beta_range": [
+        0.5,
+        1.0
+      ],
+      "placement": "raw_to_derived",
+      "evidence_basis": "BPPV attacks are usually brief.",
+      "evidence_strength": "moderate",
+      "sensitivity_analysis": false,
+      "comments": "Keep below canal-pattern edges."
+    },
+    {
+      "id": "bppv_e03",
+      "from_node": "dix_hallpike_torsional_upbeating_nystagmus",
+      "to_node": "posterior_canal_positional_pattern",
+      "edge_direction": "supportive",
+      "suggested_beta": 2.2,
+      "suggested_beta_range": [
+        1.8,
+        2.6
+      ],
+      "placement": "raw_to_derived",
+      "evidence_basis": "Pattern-defining criterion for posterior-canal BPPV.",
+      "evidence_strength": "strong",
+      "sensitivity_analysis": false,
+      "comments": "Put most posterior-canal evidence here."
+    },
+    {
+      "id": "bppv_e04",
+      "from_node": "supine_roll_geotropic_or_apogeotropic_nystagmus",
+      "to_node": "horizontal_canal_positional_pattern",
+      "edge_direction": "supportive",
+      "suggested_beta": 2.0,
+      "suggested_beta_range": [
+        1.5,
+        2.4
+      ],
+      "placement": "raw_to_derived",
+      "evidence_basis": "Pattern-defining criterion for horizontal-canal BPPV variants.",
+      "evidence_strength": "strong_to_moderate",
+      "sensitivity_analysis": false,
+      "comments": "Slightly wider uncertainty than Dix-Hallpike edge."
+    },
+    {
+      "id": "bppv_e05",
+      "from_node": "subjective_positional_vertigo_only",
+      "to_node": "subjective_positional_pattern",
+      "edge_direction": "supportive",
+      "suggested_beta": 0.7,
+      "suggested_beta_range": [
+        0.3,
+        0.9
+      ],
+      "placement": "raw_to_derived",
+      "evidence_basis": "Subjective BPPV is recognized but heterogeneous.",
+      "evidence_strength": "weak_to_moderate",
+      "sensitivity_analysis": true,
+      "comments": "Sensitivity-analysis edge."
+    },
+    {
+      "id": "bppv_e06",
+      "from_node": "positional_trigger",
+      "to_node": "subjective_positional_pattern",
+      "edge_direction": "supportive",
+      "suggested_beta": 0.6,
+      "suggested_beta_range": [
+        0.3,
+        0.8
+      ],
+      "placement": "raw_to_derived",
+      "evidence_basis": "Anchors subjective positional vertigo to positional context.",
+      "evidence_strength": "weak_to_moderate",
+      "sensitivity_analysis": true,
+      "comments": "Correlated with positional-history evidence."
+    },
+    {
+      "id": "bppv_e07",
+      "from_node": "atypical_positional_nystagmus",
+      "to_node": "atypical_positional_red_flag",
+      "edge_direction": "supportive",
+      "suggested_beta": 1.3,
+      "suggested_beta_range": [
+        0.9,
+        1.7
+      ],
+      "placement": "raw_to_derived",
+      "evidence_basis": "Central positional nystagmus literature supports atypical/central red-flag patterns.",
+      "evidence_strength": "moderate",
+      "sensitivity_analysis": false,
+      "comments": "Not itself anti-BPPV until downstream competing edge."
+    },
+    {
+      "id": "bppv_e08",
+      "from_node": "negative_positional_test",
+      "to_node": "no_objective_positional_nystagmus",
+      "edge_direction": "supportive",
+      "suggested_beta": 1.0,
+      "suggested_beta_range": [
+        0.7,
+        1.2
+      ],
+      "placement": "raw_to_derived",
+      "evidence_basis": "Encodes absence of objective positional response.",
+      "evidence_strength": "moderate",
+      "sensitivity_analysis": false,
+      "comments": "Diagnostic meaning handled downstream."
+    },
+    {
+      "id": "bppv_e09",
+      "from_node": "brief_triggered_positional_syndrome",
+      "to_node": "dx_bppv",
+      "edge_direction": "supportive",
+      "suggested_beta": 1.1,
+      "suggested_beta_range": [
+        0.7,
+        1.4
+      ],
+      "placement": "derived_to_diagnosis",
+      "evidence_basis": "Broad BPPV-compatible syndrome.",
+      "evidence_strength": "moderate",
+      "sensitivity_analysis": false,
+      "comments": "Not decisive without canal-specific pattern."
+    },
+    {
+      "id": "bppv_e10",
+      "from_node": "posterior_canal_positional_pattern",
+      "to_node": "dx_bppv",
+      "edge_direction": "supportive",
+      "suggested_beta": 1.6,
+      "suggested_beta_range": [
+        1.2,
+        2.0
+      ],
+      "placement": "derived_to_diagnosis",
+      "evidence_basis": "Canal-specific pattern strongly supports BPPV.",
+      "evidence_strength": "strong",
+      "sensitivity_analysis": false,
+      "comments": "Downstream weight deliberately lower than raw-to-derived edge to reduce double counting."
+    },
+    {
+      "id": "bppv_e11",
+      "from_node": "horizontal_canal_positional_pattern",
+      "to_node": "dx_bppv",
+      "edge_direction": "supportive",
+      "suggested_beta": 1.5,
+      "suggested_beta_range": [
+        1.1,
+        1.9
+      ],
+      "placement": "derived_to_diagnosis",
+      "evidence_basis": "Canal-specific pattern strongly supports BPPV.",
+      "evidence_strength": "strong",
+      "sensitivity_analysis": false,
+      "comments": "Similar role to posterior-canal edge."
+    },
+    {
+      "id": "bppv_e12",
+      "from_node": "subjective_positional_pattern",
+      "to_node": "dx_bppv",
+      "edge_direction": "supportive",
+      "suggested_beta": 0.7,
+      "suggested_beta_range": [
+        0.2,
+        1.0
+      ],
+      "placement": "derived_to_diagnosis",
+      "evidence_basis": "Subjective BPPV is recognized but weaker than classic objective BPPV.",
+      "evidence_strength": "weak_to_moderate",
+      "sensitivity_analysis": true,
+      "comments": "Sensitivity-analysis edge."
+    },
+    {
+      "id": "bppv_e13",
+      "from_node": "atypical_positional_red_flag",
+      "to_node": "dx_bppv",
+      "edge_direction": "competing",
+      "suggested_beta": -1.2,
+      "suggested_beta_range": [
+        -1.8,
+        -0.7
+      ],
+      "placement": "derived_to_diagnosis",
+      "evidence_basis": "Atypical or central positional patterns reduce BPPV probability.",
+      "evidence_strength": "moderate",
+      "sensitivity_analysis": true,
+      "comments": "Increase negativity if central signs co-occur."
+    },
+    {
+      "id": "bppv_e14",
+      "from_node": "no_objective_positional_nystagmus",
+      "to_node": "dx_bppv",
+      "edge_direction": "competing",
+      "suggested_beta": -0.3,
+      "suggested_beta_range": [
+        -0.7,
+        -0.1
+      ],
+      "placement": "derived_to_diagnosis",
+      "evidence_basis": "Negative positional testing weakly decreases BPPV only.",
+      "evidence_strength": "weak",
+      "sensitivity_analysis": true,
+      "comments": "Keep deliberately weak."
+    },
+    {
+      "id": "bppv_e15",
+      "from_node": "central_neurologic_sign_or_central_mri_lesion",
+      "to_node": "dx_bppv",
+      "edge_direction": "competing",
+      "suggested_beta": -1.8,
+      "suggested_beta_range": [
+        -2.3,
+        -1.2
+      ],
+      "placement": "raw_to_diagnosis",
+      "evidence_basis": "Central neurologic signs or lesions suggest alternative diagnoses.",
+      "evidence_strength": "strong",
+      "sensitivity_analysis": true,
+      "comments": "Strong negative edge."
+    }
+  ]
+}

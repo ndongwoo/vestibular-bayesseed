@@ -1,0 +1,2045 @@
+{
+  "schema_version": "0.1.0",
+  "created": "2026-05-20",
+  "description": "Node dictionary for the initial Vestibular-BayesSeed default modules. It consolidates input nodes, derived nodes, and target disease nodes across BPPV, Ménière disease, and PVP/BVP worked examples.",
+  "intended_use": "Research and educational demonstration only; not a validated clinical decision-support system.",
+  "missingness_policy": "Unobserved inputs are treated as missing/unobserved, not as negative evidence unless a specific negative input node is set to 1.",
+  "stage_order": [
+    "history",
+    "bedside",
+    "audiometry",
+    "vestibular_test",
+    "imaging"
+  ],
+  "nodes": [
+    {
+      "node_id": "age_ge_60",
+      "display_name": "Age ≥60 years",
+      "node_type": "input",
+      "value_type": "binary",
+      "primary_stage": "history",
+      "available_from_stage": [
+        "history",
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "presbyvestibulopathy_with_bvp_competitor"
+      ],
+      "description": "",
+      "intercept": null,
+      "parents": [],
+      "children": [
+        "dx_presbyvestibulopathy"
+      ],
+      "incoming_edges": [],
+      "outgoing_edges": [
+        {
+          "edge_id": "pvp_e09",
+          "direction": "out",
+          "to_node": "dx_presbyvestibulopathy",
+          "beta": 0.9,
+          "placement": "raw_to_diagnosis"
+        }
+      ],
+      "used_as_target_parent": true,
+      "notes": "",
+      "domain_tags": [
+        "PVP/BVP"
+      ]
+    },
+    {
+      "node_id": "atypical_positional_nystagmus",
+      "display_name": "Atypical positional nystagmus pattern",
+      "node_type": "input",
+      "value_type": "binary",
+      "primary_stage": "bedside",
+      "available_from_stage": [
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "bppv"
+      ],
+      "description": "",
+      "intercept": null,
+      "parents": [],
+      "children": [
+        "atypical_positional_red_flag"
+      ],
+      "incoming_edges": [],
+      "outgoing_edges": [
+        {
+          "edge_id": "bppv_e07",
+          "direction": "out",
+          "to_node": "atypical_positional_red_flag",
+          "beta": 1.3,
+          "placement": "raw_to_derived"
+        }
+      ],
+      "used_as_target_parent": false,
+      "notes": "",
+      "domain_tags": [
+        "BPPV"
+      ]
+    },
+    {
+      "node_id": "atypical_positional_red_flag",
+      "display_name": "atypical positional red flag",
+      "node_type": "derived",
+      "value_type": "probability",
+      "primary_stage": "bedside",
+      "available_from_stage": [
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "bppv"
+      ],
+      "description": "Red-flag positional pattern suggesting central or atypical alternative causes.",
+      "intercept": -1.2,
+      "parents": [
+        "atypical_positional_nystagmus"
+      ],
+      "children": [
+        "dx_bppv"
+      ],
+      "incoming_edges": [
+        {
+          "edge_id": "bppv_e07",
+          "direction": "in",
+          "from_node": "atypical_positional_nystagmus",
+          "beta": 1.3,
+          "placement": "raw_to_derived"
+        }
+      ],
+      "outgoing_edges": [
+        {
+          "edge_id": "bppv_e13",
+          "direction": "out",
+          "to_node": "dx_bppv",
+          "beta": -1.2,
+          "placement": "derived_to_diagnosis"
+        }
+      ],
+      "used_as_target_parent": true,
+      "notes": "Derived node is calculated from parent evidence using logistic CPD; default propagation can be thresholded or probability-based depending on engine setting.",
+      "domain_tags": [
+        "BPPV"
+      ]
+    },
+    {
+      "node_id": "auditory_cluster",
+      "display_name": "auditory cluster",
+      "node_type": "derived",
+      "value_type": "probability",
+      "primary_stage": "history",
+      "available_from_stage": [
+        "history",
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "meniere_disease"
+      ],
+      "description": "Fluctuating cochleo-aural symptom cluster.",
+      "intercept": -1.4,
+      "parents": [
+        "aural_fullness",
+        "fluctuating_hearing_loss",
+        "tinnitus"
+      ],
+      "children": [
+        "dx_meniere_disease"
+      ],
+      "incoming_edges": [
+        {
+          "edge_id": "md_e03",
+          "direction": "in",
+          "from_node": "fluctuating_hearing_loss",
+          "beta": 0.9,
+          "placement": "raw_to_derived"
+        },
+        {
+          "edge_id": "md_e04",
+          "direction": "in",
+          "from_node": "tinnitus",
+          "beta": 0.6,
+          "placement": "raw_to_derived"
+        },
+        {
+          "edge_id": "md_e05",
+          "direction": "in",
+          "from_node": "aural_fullness",
+          "beta": 0.5,
+          "placement": "raw_to_derived"
+        }
+      ],
+      "outgoing_edges": [
+        {
+          "edge_id": "md_e12",
+          "direction": "out",
+          "to_node": "dx_meniere_disease",
+          "beta": 1.3,
+          "placement": "derived_to_diagnosis"
+        }
+      ],
+      "used_as_target_parent": true,
+      "notes": "Derived node is calculated from parent evidence using logistic CPD; default propagation can be thresholded or probability-based depending on engine setting.",
+      "domain_tags": [
+        "MD"
+      ]
+    },
+    {
+      "node_id": "aural_fullness",
+      "display_name": "Aural fullness",
+      "node_type": "input",
+      "value_type": "binary",
+      "primary_stage": "history",
+      "available_from_stage": [
+        "history",
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "meniere_disease"
+      ],
+      "description": "",
+      "intercept": null,
+      "parents": [],
+      "children": [
+        "auditory_cluster"
+      ],
+      "incoming_edges": [],
+      "outgoing_edges": [
+        {
+          "edge_id": "md_e05",
+          "direction": "out",
+          "to_node": "auditory_cluster",
+          "beta": 0.5,
+          "placement": "raw_to_derived"
+        }
+      ],
+      "used_as_target_parent": false,
+      "notes": "",
+      "domain_tags": [
+        "MD"
+      ]
+    },
+    {
+      "node_id": "brief_duration_seconds_minutes",
+      "display_name": "Brief attacks lasting seconds to minutes",
+      "node_type": "input",
+      "value_type": "binary",
+      "primary_stage": "history",
+      "available_from_stage": [
+        "history",
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "bppv"
+      ],
+      "description": "",
+      "intercept": null,
+      "parents": [],
+      "children": [
+        "brief_triggered_positional_syndrome"
+      ],
+      "incoming_edges": [],
+      "outgoing_edges": [
+        {
+          "edge_id": "bppv_e02",
+          "direction": "out",
+          "to_node": "brief_triggered_positional_syndrome",
+          "beta": 0.8,
+          "placement": "raw_to_derived"
+        }
+      ],
+      "used_as_target_parent": false,
+      "notes": "",
+      "domain_tags": [
+        "BPPV"
+      ]
+    },
+    {
+      "node_id": "brief_triggered_positional_syndrome",
+      "display_name": "brief triggered positional syndrome",
+      "node_type": "derived",
+      "value_type": "probability",
+      "primary_stage": "history",
+      "available_from_stage": [
+        "history",
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "bppv"
+      ],
+      "description": "Broad BPPV-compatible triggered positional syndrome.",
+      "intercept": -1.2,
+      "parents": [
+        "brief_duration_seconds_minutes",
+        "positional_trigger"
+      ],
+      "children": [
+        "dx_bppv"
+      ],
+      "incoming_edges": [
+        {
+          "edge_id": "bppv_e01",
+          "direction": "in",
+          "from_node": "positional_trigger",
+          "beta": 0.9,
+          "placement": "raw_to_derived"
+        },
+        {
+          "edge_id": "bppv_e02",
+          "direction": "in",
+          "from_node": "brief_duration_seconds_minutes",
+          "beta": 0.8,
+          "placement": "raw_to_derived"
+        }
+      ],
+      "outgoing_edges": [
+        {
+          "edge_id": "bppv_e09",
+          "direction": "out",
+          "to_node": "dx_bppv",
+          "beta": 1.1,
+          "placement": "derived_to_diagnosis"
+        }
+      ],
+      "used_as_target_parent": true,
+      "notes": "Derived node is calculated from parent evidence using logistic CPD; default propagation can be thresholded or probability-based depending on engine setting.",
+      "domain_tags": [
+        "BPPV"
+      ]
+    },
+    {
+      "node_id": "central_neurologic_sign_or_central_mri_lesion",
+      "display_name": "Central neurologic sign or central MRI lesion",
+      "node_type": "input",
+      "value_type": "binary",
+      "primary_stage": "bedside_or_imaging",
+      "available_from_stage": [
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "bppv",
+        "meniere_disease",
+        "presbyvestibulopathy_with_bvp_competitor"
+      ],
+      "description": "",
+      "intercept": null,
+      "parents": [],
+      "children": [
+        "dx_bppv",
+        "dx_meniere_disease",
+        "dx_presbyvestibulopathy",
+        "non_central_chronic_vestibular_pattern"
+      ],
+      "incoming_edges": [],
+      "outgoing_edges": [
+        {
+          "edge_id": "bppv_e15",
+          "direction": "out",
+          "to_node": "dx_bppv",
+          "beta": -1.8,
+          "placement": "raw_to_diagnosis"
+        },
+        {
+          "edge_id": "md_e16",
+          "direction": "out",
+          "to_node": "dx_meniere_disease",
+          "beta": -1.3,
+          "placement": "raw_to_diagnosis"
+        },
+        {
+          "edge_id": "pvp_e08",
+          "direction": "out",
+          "to_node": "non_central_chronic_vestibular_pattern",
+          "beta": -1.5,
+          "placement": "raw_to_derived"
+        },
+        {
+          "edge_id": "pvp_e16",
+          "direction": "out",
+          "to_node": "dx_presbyvestibulopathy",
+          "beta": -1.2,
+          "placement": "raw_to_diagnosis"
+        }
+      ],
+      "used_as_target_parent": true,
+      "notes": "Composite cross-cutting competing-evidence node; may be entered from bedside neurologic examination or imaging evidence.",
+      "domain_tags": [
+        "BPPV",
+        "MD",
+        "PVP/BVP",
+        "cross-cutting competing evidence"
+      ]
+    },
+    {
+      "node_id": "chronic_dizziness_gt_3months",
+      "display_name": "Chronic dizziness/vestibular symptoms >3 months",
+      "node_type": "input",
+      "value_type": "binary",
+      "primary_stage": "history",
+      "available_from_stage": [
+        "history",
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "presbyvestibulopathy_with_bvp_competitor"
+      ],
+      "description": "",
+      "intercept": null,
+      "parents": [],
+      "children": [
+        "chronic_vestibular_course"
+      ],
+      "incoming_edges": [],
+      "outgoing_edges": [
+        {
+          "edge_id": "pvp_e01",
+          "direction": "out",
+          "to_node": "chronic_vestibular_course",
+          "beta": 1.2,
+          "placement": "raw_to_derived"
+        }
+      ],
+      "used_as_target_parent": false,
+      "notes": "",
+      "domain_tags": [
+        "PVP/BVP"
+      ]
+    },
+    {
+      "node_id": "chronic_vestibular_course",
+      "display_name": "chronic vestibular course",
+      "node_type": "derived",
+      "value_type": "probability",
+      "primary_stage": "history",
+      "available_from_stage": [
+        "history",
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "presbyvestibulopathy_with_bvp_competitor"
+      ],
+      "description": "Chronic vestibular syndrome lasting at least 3 months.",
+      "intercept": -1.0,
+      "parents": [
+        "chronic_dizziness_gt_3months"
+      ],
+      "children": [
+        "dx_presbyvestibulopathy",
+        "non_central_chronic_vestibular_pattern"
+      ],
+      "incoming_edges": [
+        {
+          "edge_id": "pvp_e01",
+          "direction": "in",
+          "from_node": "chronic_dizziness_gt_3months",
+          "beta": 1.2,
+          "placement": "raw_to_derived"
+        }
+      ],
+      "outgoing_edges": [
+        {
+          "edge_id": "pvp_e06",
+          "direction": "out",
+          "to_node": "non_central_chronic_vestibular_pattern",
+          "beta": 0.6,
+          "placement": "derived_to_derived"
+        },
+        {
+          "edge_id": "pvp_e10",
+          "direction": "out",
+          "to_node": "dx_presbyvestibulopathy",
+          "beta": 0.5,
+          "placement": "derived_to_diagnosis"
+        }
+      ],
+      "used_as_target_parent": true,
+      "notes": "Derived node is calculated from parent evidence using logistic CPD; default propagation can be thresholded or probability-based depending on engine setting.",
+      "domain_tags": [
+        "PVP/BVP"
+      ]
+    },
+    {
+      "node_id": "dix_hallpike_torsional_upbeating_nystagmus",
+      "display_name": "Dix-Hallpike torsional upbeating nystagmus",
+      "node_type": "input",
+      "value_type": "binary",
+      "primary_stage": "bedside",
+      "available_from_stage": [
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "bppv"
+      ],
+      "description": "",
+      "intercept": null,
+      "parents": [],
+      "children": [
+        "posterior_canal_positional_pattern"
+      ],
+      "incoming_edges": [],
+      "outgoing_edges": [
+        {
+          "edge_id": "bppv_e03",
+          "direction": "out",
+          "to_node": "posterior_canal_positional_pattern",
+          "beta": 2.2,
+          "placement": "raw_to_derived"
+        }
+      ],
+      "used_as_target_parent": false,
+      "notes": "",
+      "domain_tags": [
+        "BPPV"
+      ]
+    },
+    {
+      "node_id": "duration_20min_to_12h",
+      "display_name": "Episode duration 20 minutes to 12 hours",
+      "node_type": "input",
+      "value_type": "binary",
+      "primary_stage": "history",
+      "available_from_stage": [
+        "history",
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "meniere_disease"
+      ],
+      "description": "",
+      "intercept": null,
+      "parents": [],
+      "children": [
+        "episodic_vestibular_syndrome"
+      ],
+      "incoming_edges": [],
+      "outgoing_edges": [
+        {
+          "edge_id": "md_e02",
+          "direction": "out",
+          "to_node": "episodic_vestibular_syndrome",
+          "beta": 1.2,
+          "placement": "raw_to_derived"
+        }
+      ],
+      "used_as_target_parent": false,
+      "notes": "",
+      "domain_tags": [
+        "MD"
+      ]
+    },
+    {
+      "node_id": "dx_bilateral_vestibulopathy",
+      "display_name": "Bilateral vestibulopathy",
+      "node_type": "target_disease",
+      "value_type": "probability",
+      "primary_stage": "vestibular_test",
+      "available_from_stage": [
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "presbyvestibulopathy_with_bvp_competitor"
+      ],
+      "description": "Placeholder specialty-clinic prior; adjust by referral pathway.",
+      "intercept": -3.5,
+      "parents": [
+        "severe_bilateral_vestibular_hypofunction_node"
+      ],
+      "children": [],
+      "incoming_edges": [
+        {
+          "edge_id": "pvp_e14",
+          "direction": "in",
+          "from_node": "severe_bilateral_vestibular_hypofunction_node",
+          "beta": 2.2,
+          "placement": "derived_to_diagnosis"
+        }
+      ],
+      "outgoing_edges": [],
+      "used_as_target_parent": false,
+      "notes": "Diagnosis-node intercept is an illustrative placeholder and should be reconfigured by target clinical setting and stage before validation.",
+      "domain_tags": [
+        "PVP/BVP"
+      ]
+    },
+    {
+      "node_id": "dx_bppv",
+      "display_name": "BPPV",
+      "node_type": "target_disease",
+      "value_type": "probability",
+      "primary_stage": "bedside",
+      "available_from_stage": [
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "bppv"
+      ],
+      "description": "Placeholder specialty-clinic prior; configure by setting and stage before validation.",
+      "intercept": -2.2,
+      "parents": [
+        "atypical_positional_red_flag",
+        "brief_triggered_positional_syndrome",
+        "central_neurologic_sign_or_central_mri_lesion",
+        "horizontal_canal_positional_pattern",
+        "no_objective_positional_nystagmus",
+        "posterior_canal_positional_pattern",
+        "subjective_positional_pattern"
+      ],
+      "children": [],
+      "incoming_edges": [
+        {
+          "edge_id": "bppv_e09",
+          "direction": "in",
+          "from_node": "brief_triggered_positional_syndrome",
+          "beta": 1.1,
+          "placement": "derived_to_diagnosis"
+        },
+        {
+          "edge_id": "bppv_e10",
+          "direction": "in",
+          "from_node": "posterior_canal_positional_pattern",
+          "beta": 1.6,
+          "placement": "derived_to_diagnosis"
+        },
+        {
+          "edge_id": "bppv_e11",
+          "direction": "in",
+          "from_node": "horizontal_canal_positional_pattern",
+          "beta": 1.5,
+          "placement": "derived_to_diagnosis"
+        },
+        {
+          "edge_id": "bppv_e12",
+          "direction": "in",
+          "from_node": "subjective_positional_pattern",
+          "beta": 0.7,
+          "placement": "derived_to_diagnosis"
+        },
+        {
+          "edge_id": "bppv_e13",
+          "direction": "in",
+          "from_node": "atypical_positional_red_flag",
+          "beta": -1.2,
+          "placement": "derived_to_diagnosis"
+        },
+        {
+          "edge_id": "bppv_e14",
+          "direction": "in",
+          "from_node": "no_objective_positional_nystagmus",
+          "beta": -0.3,
+          "placement": "derived_to_diagnosis"
+        },
+        {
+          "edge_id": "bppv_e15",
+          "direction": "in",
+          "from_node": "central_neurologic_sign_or_central_mri_lesion",
+          "beta": -1.8,
+          "placement": "raw_to_diagnosis"
+        }
+      ],
+      "outgoing_edges": [],
+      "used_as_target_parent": false,
+      "notes": "Diagnosis-node intercept is an illustrative placeholder and should be reconfigured by target clinical setting and stage before validation.",
+      "domain_tags": [
+        "BPPV"
+      ]
+    },
+    {
+      "node_id": "dx_meniere_disease",
+      "display_name": "Ménière disease",
+      "node_type": "target_disease",
+      "value_type": "probability",
+      "primary_stage": "imaging",
+      "available_from_stage": [
+        "imaging"
+      ],
+      "modules": [
+        "meniere_disease"
+      ],
+      "description": "Placeholder specialty-clinic prior; configure by setting and stage before validation.",
+      "intercept": -2.8,
+      "parents": [
+        "auditory_cluster",
+        "central_neurologic_sign_or_central_mri_lesion",
+        "endolymphatic_hydrops_evidence",
+        "episodic_vestibular_syndrome",
+        "migraine_overlap_pattern",
+        "objective_low_frequency_cochlear_pattern"
+      ],
+      "children": [],
+      "incoming_edges": [
+        {
+          "edge_id": "md_e11",
+          "direction": "in",
+          "from_node": "episodic_vestibular_syndrome",
+          "beta": 1.0,
+          "placement": "derived_to_diagnosis"
+        },
+        {
+          "edge_id": "md_e12",
+          "direction": "in",
+          "from_node": "auditory_cluster",
+          "beta": 1.3,
+          "placement": "derived_to_diagnosis"
+        },
+        {
+          "edge_id": "md_e13",
+          "direction": "in",
+          "from_node": "objective_low_frequency_cochlear_pattern",
+          "beta": 1.6,
+          "placement": "derived_to_diagnosis"
+        },
+        {
+          "edge_id": "md_e14",
+          "direction": "in",
+          "from_node": "endolymphatic_hydrops_evidence",
+          "beta": 1.1,
+          "placement": "derived_to_diagnosis"
+        },
+        {
+          "edge_id": "md_e15",
+          "direction": "in",
+          "from_node": "migraine_overlap_pattern",
+          "beta": -0.5,
+          "placement": "derived_to_diagnosis"
+        },
+        {
+          "edge_id": "md_e16",
+          "direction": "in",
+          "from_node": "central_neurologic_sign_or_central_mri_lesion",
+          "beta": -1.3,
+          "placement": "raw_to_diagnosis"
+        }
+      ],
+      "outgoing_edges": [],
+      "used_as_target_parent": false,
+      "notes": "Diagnosis-node intercept is an illustrative placeholder and should be reconfigured by target clinical setting and stage before validation.",
+      "domain_tags": [
+        "MD"
+      ]
+    },
+    {
+      "node_id": "dx_presbyvestibulopathy",
+      "display_name": "Presbyvestibulopathy",
+      "node_type": "target_disease",
+      "value_type": "probability",
+      "primary_stage": "vestibular_test",
+      "available_from_stage": [
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "presbyvestibulopathy_with_bvp_competitor"
+      ],
+      "description": "Placeholder specialty-clinic prior; PVP is setting- and comorbidity-dependent.",
+      "intercept": -3.2,
+      "parents": [
+        "age_ge_60",
+        "central_neurologic_sign_or_central_mri_lesion",
+        "chronic_vestibular_course",
+        "gait_balance_symptom_burden",
+        "mild_bilateral_vestibular_hypofunction_node",
+        "non_central_chronic_vestibular_pattern",
+        "severe_bilateral_vestibular_hypofunction_node"
+      ],
+      "children": [],
+      "incoming_edges": [
+        {
+          "edge_id": "pvp_e09",
+          "direction": "in",
+          "from_node": "age_ge_60",
+          "beta": 0.9,
+          "placement": "raw_to_diagnosis"
+        },
+        {
+          "edge_id": "pvp_e10",
+          "direction": "in",
+          "from_node": "chronic_vestibular_course",
+          "beta": 0.5,
+          "placement": "derived_to_diagnosis"
+        },
+        {
+          "edge_id": "pvp_e11",
+          "direction": "in",
+          "from_node": "gait_balance_symptom_burden",
+          "beta": 0.5,
+          "placement": "derived_to_diagnosis"
+        },
+        {
+          "edge_id": "pvp_e12",
+          "direction": "in",
+          "from_node": "mild_bilateral_vestibular_hypofunction_node",
+          "beta": 1.6,
+          "placement": "derived_to_diagnosis"
+        },
+        {
+          "edge_id": "pvp_e13",
+          "direction": "in",
+          "from_node": "non_central_chronic_vestibular_pattern",
+          "beta": 0.7,
+          "placement": "derived_to_diagnosis"
+        },
+        {
+          "edge_id": "pvp_e15",
+          "direction": "in",
+          "from_node": "severe_bilateral_vestibular_hypofunction_node",
+          "beta": -1.4,
+          "placement": "derived_to_diagnosis"
+        },
+        {
+          "edge_id": "pvp_e16",
+          "direction": "in",
+          "from_node": "central_neurologic_sign_or_central_mri_lesion",
+          "beta": -1.2,
+          "placement": "raw_to_diagnosis"
+        }
+      ],
+      "outgoing_edges": [],
+      "used_as_target_parent": false,
+      "notes": "Diagnosis-node intercept is an illustrative placeholder and should be reconfigured by target clinical setting and stage before validation.",
+      "domain_tags": [
+        "PVP/BVP"
+      ]
+    },
+    {
+      "node_id": "endolymphatic_hydrops_evidence",
+      "display_name": "endolymphatic hydrops evidence",
+      "node_type": "derived",
+      "value_type": "probability",
+      "primary_stage": "imaging",
+      "available_from_stage": [
+        "imaging"
+      ],
+      "modules": [
+        "meniere_disease"
+      ],
+      "description": "Supportive hydrops evidence cluster; MRI is weighted more strongly than VEMP/ECoG.",
+      "intercept": -1.6,
+      "parents": [
+        "mri_endolymphatic_hydrops",
+        "objective_low_frequency_cochlear_pattern",
+        "vemp_ecog_hydrops_compatible"
+      ],
+      "children": [
+        "dx_meniere_disease"
+      ],
+      "incoming_edges": [
+        {
+          "edge_id": "md_e07",
+          "direction": "in",
+          "from_node": "objective_low_frequency_cochlear_pattern",
+          "beta": 0.5,
+          "placement": "derived_to_derived"
+        },
+        {
+          "edge_id": "md_e08",
+          "direction": "in",
+          "from_node": "mri_endolymphatic_hydrops",
+          "beta": 1.6,
+          "placement": "raw_to_derived"
+        },
+        {
+          "edge_id": "md_e09",
+          "direction": "in",
+          "from_node": "vemp_ecog_hydrops_compatible",
+          "beta": 0.8,
+          "placement": "raw_to_derived"
+        }
+      ],
+      "outgoing_edges": [
+        {
+          "edge_id": "md_e14",
+          "direction": "out",
+          "to_node": "dx_meniere_disease",
+          "beta": 1.1,
+          "placement": "derived_to_diagnosis"
+        }
+      ],
+      "used_as_target_parent": true,
+      "notes": "Derived node is calculated from parent evidence using logistic CPD; default propagation can be thresholded or probability-based depending on engine setting.",
+      "domain_tags": [
+        "MD"
+      ]
+    },
+    {
+      "node_id": "episodic_vestibular_syndrome",
+      "display_name": "episodic vestibular syndrome",
+      "node_type": "derived",
+      "value_type": "probability",
+      "primary_stage": "history",
+      "available_from_stage": [
+        "history",
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "meniere_disease"
+      ],
+      "description": "Recurrent spontaneous episodic vestibular syndrome with MD-compatible duration.",
+      "intercept": -1.3,
+      "parents": [
+        "duration_20min_to_12h",
+        "recurrent_spontaneous_episodes"
+      ],
+      "children": [
+        "dx_meniere_disease"
+      ],
+      "incoming_edges": [
+        {
+          "edge_id": "md_e01",
+          "direction": "in",
+          "from_node": "recurrent_spontaneous_episodes",
+          "beta": 0.8,
+          "placement": "raw_to_derived"
+        },
+        {
+          "edge_id": "md_e02",
+          "direction": "in",
+          "from_node": "duration_20min_to_12h",
+          "beta": 1.2,
+          "placement": "raw_to_derived"
+        }
+      ],
+      "outgoing_edges": [
+        {
+          "edge_id": "md_e11",
+          "direction": "out",
+          "to_node": "dx_meniere_disease",
+          "beta": 1.0,
+          "placement": "derived_to_diagnosis"
+        }
+      ],
+      "used_as_target_parent": true,
+      "notes": "Derived node is calculated from parent evidence using logistic CPD; default propagation can be thresholded or probability-based depending on engine setting.",
+      "domain_tags": [
+        "MD"
+      ]
+    },
+    {
+      "node_id": "fluctuating_hearing_loss",
+      "display_name": "Fluctuating hearing loss",
+      "node_type": "input",
+      "value_type": "binary",
+      "primary_stage": "history",
+      "available_from_stage": [
+        "history",
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "meniere_disease"
+      ],
+      "description": "",
+      "intercept": null,
+      "parents": [],
+      "children": [
+        "auditory_cluster"
+      ],
+      "incoming_edges": [],
+      "outgoing_edges": [
+        {
+          "edge_id": "md_e03",
+          "direction": "out",
+          "to_node": "auditory_cluster",
+          "beta": 0.9,
+          "placement": "raw_to_derived"
+        }
+      ],
+      "used_as_target_parent": false,
+      "notes": "",
+      "domain_tags": [
+        "MD"
+      ]
+    },
+    {
+      "node_id": "gait_balance_symptom_burden",
+      "display_name": "gait balance symptom burden",
+      "node_type": "derived",
+      "value_type": "probability",
+      "primary_stage": "history",
+      "available_from_stage": [
+        "history",
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "presbyvestibulopathy_with_bvp_competitor"
+      ],
+      "description": "Gait/balance burden; oscillopsia/darkness is indirect for PVP and more BVP-like.",
+      "intercept": -1.2,
+      "parents": [
+        "gait_difficulty_imbalance_falls",
+        "oscillopsia_or_worse_darkness_uneven_ground"
+      ],
+      "children": [
+        "dx_presbyvestibulopathy",
+        "non_central_chronic_vestibular_pattern"
+      ],
+      "incoming_edges": [
+        {
+          "edge_id": "pvp_e02",
+          "direction": "in",
+          "from_node": "gait_difficulty_imbalance_falls",
+          "beta": 0.9,
+          "placement": "raw_to_derived"
+        },
+        {
+          "edge_id": "pvp_e03",
+          "direction": "in",
+          "from_node": "oscillopsia_or_worse_darkness_uneven_ground",
+          "beta": 0.6,
+          "placement": "raw_to_derived"
+        }
+      ],
+      "outgoing_edges": [
+        {
+          "edge_id": "pvp_e07",
+          "direction": "out",
+          "to_node": "non_central_chronic_vestibular_pattern",
+          "beta": 0.6,
+          "placement": "derived_to_derived"
+        },
+        {
+          "edge_id": "pvp_e11",
+          "direction": "out",
+          "to_node": "dx_presbyvestibulopathy",
+          "beta": 0.5,
+          "placement": "derived_to_diagnosis"
+        }
+      ],
+      "used_as_target_parent": true,
+      "notes": "Derived node is calculated from parent evidence using logistic CPD; default propagation can be thresholded or probability-based depending on engine setting.",
+      "domain_tags": [
+        "PVP/BVP"
+      ]
+    },
+    {
+      "node_id": "gait_difficulty_imbalance_falls",
+      "display_name": "Gait difficulty, imbalance, or recurrent falls",
+      "node_type": "input",
+      "value_type": "binary",
+      "primary_stage": "history",
+      "available_from_stage": [
+        "history",
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "presbyvestibulopathy_with_bvp_competitor"
+      ],
+      "description": "",
+      "intercept": null,
+      "parents": [],
+      "children": [
+        "gait_balance_symptom_burden"
+      ],
+      "incoming_edges": [],
+      "outgoing_edges": [
+        {
+          "edge_id": "pvp_e02",
+          "direction": "out",
+          "to_node": "gait_balance_symptom_burden",
+          "beta": 0.9,
+          "placement": "raw_to_derived"
+        }
+      ],
+      "used_as_target_parent": false,
+      "notes": "",
+      "domain_tags": [
+        "PVP/BVP"
+      ]
+    },
+    {
+      "node_id": "horizontal_canal_positional_pattern",
+      "display_name": "horizontal canal positional pattern",
+      "node_type": "derived",
+      "value_type": "probability",
+      "primary_stage": "bedside",
+      "available_from_stage": [
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "bppv"
+      ],
+      "description": "Horizontal-canal positional nystagmus pattern.",
+      "intercept": -1.2,
+      "parents": [
+        "supine_roll_geotropic_or_apogeotropic_nystagmus"
+      ],
+      "children": [
+        "dx_bppv"
+      ],
+      "incoming_edges": [
+        {
+          "edge_id": "bppv_e04",
+          "direction": "in",
+          "from_node": "supine_roll_geotropic_or_apogeotropic_nystagmus",
+          "beta": 2.0,
+          "placement": "raw_to_derived"
+        }
+      ],
+      "outgoing_edges": [
+        {
+          "edge_id": "bppv_e11",
+          "direction": "out",
+          "to_node": "dx_bppv",
+          "beta": 1.5,
+          "placement": "derived_to_diagnosis"
+        }
+      ],
+      "used_as_target_parent": true,
+      "notes": "Derived node is calculated from parent evidence using logistic CPD; default propagation can be thresholded or probability-based depending on engine setting.",
+      "domain_tags": [
+        "BPPV"
+      ]
+    },
+    {
+      "node_id": "low_frequency_snhl",
+      "display_name": "Audiometrically documented low-/mid-frequency SNHL",
+      "node_type": "input",
+      "value_type": "binary",
+      "primary_stage": "audiometry",
+      "available_from_stage": [
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "meniere_disease"
+      ],
+      "description": "",
+      "intercept": null,
+      "parents": [],
+      "children": [
+        "objective_low_frequency_cochlear_pattern"
+      ],
+      "incoming_edges": [],
+      "outgoing_edges": [
+        {
+          "edge_id": "md_e06",
+          "direction": "out",
+          "to_node": "objective_low_frequency_cochlear_pattern",
+          "beta": 1.7,
+          "placement": "raw_to_derived"
+        }
+      ],
+      "used_as_target_parent": false,
+      "notes": "",
+      "domain_tags": [
+        "MD"
+      ]
+    },
+    {
+      "node_id": "migraine_features",
+      "display_name": "Migraine phenotype features",
+      "node_type": "input",
+      "value_type": "binary",
+      "primary_stage": "history",
+      "available_from_stage": [
+        "history",
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "meniere_disease"
+      ],
+      "description": "",
+      "intercept": null,
+      "parents": [],
+      "children": [
+        "migraine_overlap_pattern"
+      ],
+      "incoming_edges": [],
+      "outgoing_edges": [
+        {
+          "edge_id": "md_e10",
+          "direction": "out",
+          "to_node": "migraine_overlap_pattern",
+          "beta": 0.7,
+          "placement": "raw_to_derived"
+        }
+      ],
+      "used_as_target_parent": false,
+      "notes": "",
+      "domain_tags": [
+        "MD"
+      ]
+    },
+    {
+      "node_id": "migraine_overlap_pattern",
+      "display_name": "migraine overlap pattern",
+      "node_type": "derived",
+      "value_type": "probability",
+      "primary_stage": "history",
+      "available_from_stage": [
+        "history",
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "meniere_disease"
+      ],
+      "description": "Migraine-phenotype overlap pattern; not a hard exclusion for MD.",
+      "intercept": -1.3,
+      "parents": [
+        "migraine_features"
+      ],
+      "children": [
+        "dx_meniere_disease"
+      ],
+      "incoming_edges": [
+        {
+          "edge_id": "md_e10",
+          "direction": "in",
+          "from_node": "migraine_features",
+          "beta": 0.7,
+          "placement": "raw_to_derived"
+        }
+      ],
+      "outgoing_edges": [
+        {
+          "edge_id": "md_e15",
+          "direction": "out",
+          "to_node": "dx_meniere_disease",
+          "beta": -0.5,
+          "placement": "derived_to_diagnosis"
+        }
+      ],
+      "used_as_target_parent": true,
+      "notes": "Derived node is calculated from parent evidence using logistic CPD; default propagation can be thresholded or probability-based depending on engine setting.",
+      "domain_tags": [
+        "MD"
+      ]
+    },
+    {
+      "node_id": "mild_bilateral_vestibular_hypofunction",
+      "display_name": "Mild bilateral vestibular hypofunction",
+      "node_type": "input",
+      "value_type": "binary",
+      "primary_stage": "vestibular_test",
+      "available_from_stage": [
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "presbyvestibulopathy_with_bvp_competitor"
+      ],
+      "description": "",
+      "intercept": null,
+      "parents": [],
+      "children": [
+        "mild_bilateral_vestibular_hypofunction_node"
+      ],
+      "incoming_edges": [],
+      "outgoing_edges": [
+        {
+          "edge_id": "pvp_e04",
+          "direction": "out",
+          "to_node": "mild_bilateral_vestibular_hypofunction_node",
+          "beta": 1.8,
+          "placement": "raw_to_derived"
+        }
+      ],
+      "used_as_target_parent": false,
+      "notes": "",
+      "domain_tags": [
+        "PVP/BVP"
+      ]
+    },
+    {
+      "node_id": "mild_bilateral_vestibular_hypofunction_node",
+      "display_name": "mild bilateral vestibular hypofunction node",
+      "node_type": "derived",
+      "value_type": "probability",
+      "primary_stage": "vestibular_test",
+      "available_from_stage": [
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "presbyvestibulopathy_with_bvp_competitor"
+      ],
+      "description": "Intermediate objective zone between normal and BVP thresholds.",
+      "intercept": -1.0,
+      "parents": [
+        "mild_bilateral_vestibular_hypofunction"
+      ],
+      "children": [
+        "dx_presbyvestibulopathy"
+      ],
+      "incoming_edges": [
+        {
+          "edge_id": "pvp_e04",
+          "direction": "in",
+          "from_node": "mild_bilateral_vestibular_hypofunction",
+          "beta": 1.8,
+          "placement": "raw_to_derived"
+        }
+      ],
+      "outgoing_edges": [
+        {
+          "edge_id": "pvp_e12",
+          "direction": "out",
+          "to_node": "dx_presbyvestibulopathy",
+          "beta": 1.6,
+          "placement": "derived_to_diagnosis"
+        }
+      ],
+      "used_as_target_parent": true,
+      "notes": "Derived node is calculated from parent evidence using logistic CPD; default propagation can be thresholded or probability-based depending on engine setting.",
+      "domain_tags": [
+        "PVP/BVP"
+      ]
+    },
+    {
+      "node_id": "mri_endolymphatic_hydrops",
+      "display_name": "MRI endolymphatic hydrops evidence",
+      "node_type": "input",
+      "value_type": "binary",
+      "primary_stage": "imaging",
+      "available_from_stage": [
+        "imaging"
+      ],
+      "modules": [
+        "meniere_disease"
+      ],
+      "description": "",
+      "intercept": null,
+      "parents": [],
+      "children": [
+        "endolymphatic_hydrops_evidence"
+      ],
+      "incoming_edges": [],
+      "outgoing_edges": [
+        {
+          "edge_id": "md_e08",
+          "direction": "out",
+          "to_node": "endolymphatic_hydrops_evidence",
+          "beta": 1.6,
+          "placement": "raw_to_derived"
+        }
+      ],
+      "used_as_target_parent": false,
+      "notes": "",
+      "domain_tags": [
+        "MD"
+      ]
+    },
+    {
+      "node_id": "negative_positional_test",
+      "display_name": "No vertigo/nystagmus on positional testing",
+      "node_type": "input",
+      "value_type": "binary",
+      "primary_stage": "bedside",
+      "available_from_stage": [
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "bppv"
+      ],
+      "description": "",
+      "intercept": null,
+      "parents": [],
+      "children": [
+        "no_objective_positional_nystagmus"
+      ],
+      "incoming_edges": [],
+      "outgoing_edges": [
+        {
+          "edge_id": "bppv_e08",
+          "direction": "out",
+          "to_node": "no_objective_positional_nystagmus",
+          "beta": 1.0,
+          "placement": "raw_to_derived"
+        }
+      ],
+      "used_as_target_parent": false,
+      "notes": "",
+      "domain_tags": [
+        "BPPV"
+      ]
+    },
+    {
+      "node_id": "no_objective_positional_nystagmus",
+      "display_name": "no objective positional nystagmus",
+      "node_type": "derived",
+      "value_type": "probability",
+      "primary_stage": "bedside",
+      "available_from_stage": [
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "bppv"
+      ],
+      "description": "Absence of objective positional nystagmus; downstream effect is intentionally weak.",
+      "intercept": -1.0,
+      "parents": [
+        "negative_positional_test"
+      ],
+      "children": [
+        "dx_bppv"
+      ],
+      "incoming_edges": [
+        {
+          "edge_id": "bppv_e08",
+          "direction": "in",
+          "from_node": "negative_positional_test",
+          "beta": 1.0,
+          "placement": "raw_to_derived"
+        }
+      ],
+      "outgoing_edges": [
+        {
+          "edge_id": "bppv_e14",
+          "direction": "out",
+          "to_node": "dx_bppv",
+          "beta": -0.3,
+          "placement": "derived_to_diagnosis"
+        }
+      ],
+      "used_as_target_parent": true,
+      "notes": "Derived node is calculated from parent evidence using logistic CPD; default propagation can be thresholded or probability-based depending on engine setting.",
+      "domain_tags": [
+        "BPPV"
+      ]
+    },
+    {
+      "node_id": "non_central_chronic_vestibular_pattern",
+      "display_name": "non central chronic vestibular pattern",
+      "node_type": "derived",
+      "value_type": "probability",
+      "primary_stage": "bedside",
+      "available_from_stage": [
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "presbyvestibulopathy_with_bvp_competitor"
+      ],
+      "description": "Chronic peripheral-like pattern not better accounted for by central disorder.",
+      "intercept": -1.4,
+      "parents": [
+        "central_neurologic_sign_or_central_mri_lesion",
+        "chronic_vestibular_course",
+        "gait_balance_symptom_burden"
+      ],
+      "children": [
+        "dx_presbyvestibulopathy"
+      ],
+      "incoming_edges": [
+        {
+          "edge_id": "pvp_e06",
+          "direction": "in",
+          "from_node": "chronic_vestibular_course",
+          "beta": 0.6,
+          "placement": "derived_to_derived"
+        },
+        {
+          "edge_id": "pvp_e07",
+          "direction": "in",
+          "from_node": "gait_balance_symptom_burden",
+          "beta": 0.6,
+          "placement": "derived_to_derived"
+        },
+        {
+          "edge_id": "pvp_e08",
+          "direction": "in",
+          "from_node": "central_neurologic_sign_or_central_mri_lesion",
+          "beta": -1.5,
+          "placement": "raw_to_derived"
+        }
+      ],
+      "outgoing_edges": [
+        {
+          "edge_id": "pvp_e13",
+          "direction": "out",
+          "to_node": "dx_presbyvestibulopathy",
+          "beta": 0.7,
+          "placement": "derived_to_diagnosis"
+        }
+      ],
+      "used_as_target_parent": true,
+      "notes": "Derived node is calculated from parent evidence using logistic CPD; default propagation can be thresholded or probability-based depending on engine setting.",
+      "domain_tags": [
+        "PVP/BVP"
+      ]
+    },
+    {
+      "node_id": "objective_low_frequency_cochlear_pattern",
+      "display_name": "objective low frequency cochlear pattern",
+      "node_type": "derived",
+      "value_type": "probability",
+      "primary_stage": "audiometry",
+      "available_from_stage": [
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "meniere_disease"
+      ],
+      "description": "Objective low-/mid-frequency cochlear pattern.",
+      "intercept": -1.2,
+      "parents": [
+        "low_frequency_snhl"
+      ],
+      "children": [
+        "dx_meniere_disease",
+        "endolymphatic_hydrops_evidence"
+      ],
+      "incoming_edges": [
+        {
+          "edge_id": "md_e06",
+          "direction": "in",
+          "from_node": "low_frequency_snhl",
+          "beta": 1.7,
+          "placement": "raw_to_derived"
+        }
+      ],
+      "outgoing_edges": [
+        {
+          "edge_id": "md_e07",
+          "direction": "out",
+          "to_node": "endolymphatic_hydrops_evidence",
+          "beta": 0.5,
+          "placement": "derived_to_derived"
+        },
+        {
+          "edge_id": "md_e13",
+          "direction": "out",
+          "to_node": "dx_meniere_disease",
+          "beta": 1.6,
+          "placement": "derived_to_diagnosis"
+        }
+      ],
+      "used_as_target_parent": true,
+      "notes": "Derived node is calculated from parent evidence using logistic CPD; default propagation can be thresholded or probability-based depending on engine setting.",
+      "domain_tags": [
+        "MD"
+      ]
+    },
+    {
+      "node_id": "oscillopsia_or_worse_darkness_uneven_ground",
+      "display_name": "Oscillopsia or worse in darkness/uneven ground",
+      "node_type": "input",
+      "value_type": "binary",
+      "primary_stage": "history",
+      "available_from_stage": [
+        "history",
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "presbyvestibulopathy_with_bvp_competitor"
+      ],
+      "description": "",
+      "intercept": null,
+      "parents": [],
+      "children": [
+        "gait_balance_symptom_burden"
+      ],
+      "incoming_edges": [],
+      "outgoing_edges": [
+        {
+          "edge_id": "pvp_e03",
+          "direction": "out",
+          "to_node": "gait_balance_symptom_burden",
+          "beta": 0.6,
+          "placement": "raw_to_derived"
+        }
+      ],
+      "used_as_target_parent": false,
+      "notes": "",
+      "domain_tags": [
+        "PVP/BVP"
+      ]
+    },
+    {
+      "node_id": "positional_trigger",
+      "display_name": "Vertigo/dizziness triggered by head position change",
+      "node_type": "input",
+      "value_type": "binary",
+      "primary_stage": "history",
+      "available_from_stage": [
+        "history",
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "bppv"
+      ],
+      "description": "",
+      "intercept": null,
+      "parents": [],
+      "children": [
+        "brief_triggered_positional_syndrome",
+        "subjective_positional_pattern"
+      ],
+      "incoming_edges": [],
+      "outgoing_edges": [
+        {
+          "edge_id": "bppv_e01",
+          "direction": "out",
+          "to_node": "brief_triggered_positional_syndrome",
+          "beta": 0.9,
+          "placement": "raw_to_derived"
+        },
+        {
+          "edge_id": "bppv_e06",
+          "direction": "out",
+          "to_node": "subjective_positional_pattern",
+          "beta": 0.6,
+          "placement": "raw_to_derived"
+        }
+      ],
+      "used_as_target_parent": false,
+      "notes": "",
+      "domain_tags": [
+        "BPPV"
+      ]
+    },
+    {
+      "node_id": "posterior_canal_positional_pattern",
+      "display_name": "posterior canal positional pattern",
+      "node_type": "derived",
+      "value_type": "probability",
+      "primary_stage": "bedside",
+      "available_from_stage": [
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "bppv"
+      ],
+      "description": "Posterior-canal canal-specific positional nystagmus pattern.",
+      "intercept": -1.2,
+      "parents": [
+        "dix_hallpike_torsional_upbeating_nystagmus"
+      ],
+      "children": [
+        "dx_bppv"
+      ],
+      "incoming_edges": [
+        {
+          "edge_id": "bppv_e03",
+          "direction": "in",
+          "from_node": "dix_hallpike_torsional_upbeating_nystagmus",
+          "beta": 2.2,
+          "placement": "raw_to_derived"
+        }
+      ],
+      "outgoing_edges": [
+        {
+          "edge_id": "bppv_e10",
+          "direction": "out",
+          "to_node": "dx_bppv",
+          "beta": 1.6,
+          "placement": "derived_to_diagnosis"
+        }
+      ],
+      "used_as_target_parent": true,
+      "notes": "Derived node is calculated from parent evidence using logistic CPD; default propagation can be thresholded or probability-based depending on engine setting.",
+      "domain_tags": [
+        "BPPV"
+      ]
+    },
+    {
+      "node_id": "recurrent_spontaneous_episodes",
+      "display_name": "Two or more spontaneous vertigo episodes",
+      "node_type": "input",
+      "value_type": "binary",
+      "primary_stage": "history",
+      "available_from_stage": [
+        "history",
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "meniere_disease"
+      ],
+      "description": "",
+      "intercept": null,
+      "parents": [],
+      "children": [
+        "episodic_vestibular_syndrome"
+      ],
+      "incoming_edges": [],
+      "outgoing_edges": [
+        {
+          "edge_id": "md_e01",
+          "direction": "out",
+          "to_node": "episodic_vestibular_syndrome",
+          "beta": 0.8,
+          "placement": "raw_to_derived"
+        }
+      ],
+      "used_as_target_parent": false,
+      "notes": "",
+      "domain_tags": [
+        "MD"
+      ]
+    },
+    {
+      "node_id": "severe_bilateral_vestibular_hypofunction",
+      "display_name": "Severe bilateral vestibular hypofunction",
+      "node_type": "input",
+      "value_type": "binary",
+      "primary_stage": "vestibular_test",
+      "available_from_stage": [
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "presbyvestibulopathy_with_bvp_competitor"
+      ],
+      "description": "",
+      "intercept": null,
+      "parents": [],
+      "children": [
+        "severe_bilateral_vestibular_hypofunction_node"
+      ],
+      "incoming_edges": [],
+      "outgoing_edges": [
+        {
+          "edge_id": "pvp_e05",
+          "direction": "out",
+          "to_node": "severe_bilateral_vestibular_hypofunction_node",
+          "beta": 2.0,
+          "placement": "raw_to_derived"
+        }
+      ],
+      "used_as_target_parent": false,
+      "notes": "",
+      "domain_tags": [
+        "PVP/BVP"
+      ]
+    },
+    {
+      "node_id": "severe_bilateral_vestibular_hypofunction_node",
+      "display_name": "severe bilateral vestibular hypofunction node",
+      "node_type": "derived",
+      "value_type": "probability",
+      "primary_stage": "vestibular_test",
+      "available_from_stage": [
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "presbyvestibulopathy_with_bvp_competitor"
+      ],
+      "description": "Severe bilateral VOR loss compatible with BVP thresholds.",
+      "intercept": -1.0,
+      "parents": [
+        "severe_bilateral_vestibular_hypofunction"
+      ],
+      "children": [
+        "dx_bilateral_vestibulopathy",
+        "dx_presbyvestibulopathy"
+      ],
+      "incoming_edges": [
+        {
+          "edge_id": "pvp_e05",
+          "direction": "in",
+          "from_node": "severe_bilateral_vestibular_hypofunction",
+          "beta": 2.0,
+          "placement": "raw_to_derived"
+        }
+      ],
+      "outgoing_edges": [
+        {
+          "edge_id": "pvp_e14",
+          "direction": "out",
+          "to_node": "dx_bilateral_vestibulopathy",
+          "beta": 2.2,
+          "placement": "derived_to_diagnosis"
+        },
+        {
+          "edge_id": "pvp_e15",
+          "direction": "out",
+          "to_node": "dx_presbyvestibulopathy",
+          "beta": -1.4,
+          "placement": "derived_to_diagnosis"
+        }
+      ],
+      "used_as_target_parent": true,
+      "notes": "Derived node is calculated from parent evidence using logistic CPD; default propagation can be thresholded or probability-based depending on engine setting.",
+      "domain_tags": [
+        "PVP/BVP"
+      ]
+    },
+    {
+      "node_id": "subjective_positional_pattern",
+      "display_name": "subjective positional pattern",
+      "node_type": "derived",
+      "value_type": "probability",
+      "primary_stage": "bedside",
+      "available_from_stage": [
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "bppv"
+      ],
+      "description": "Subjective positional BPPV-like pattern without objective nystagmus.",
+      "intercept": -1.3,
+      "parents": [
+        "positional_trigger",
+        "subjective_positional_vertigo_only"
+      ],
+      "children": [
+        "dx_bppv"
+      ],
+      "incoming_edges": [
+        {
+          "edge_id": "bppv_e05",
+          "direction": "in",
+          "from_node": "subjective_positional_vertigo_only",
+          "beta": 0.7,
+          "placement": "raw_to_derived"
+        },
+        {
+          "edge_id": "bppv_e06",
+          "direction": "in",
+          "from_node": "positional_trigger",
+          "beta": 0.6,
+          "placement": "raw_to_derived"
+        }
+      ],
+      "outgoing_edges": [
+        {
+          "edge_id": "bppv_e12",
+          "direction": "out",
+          "to_node": "dx_bppv",
+          "beta": 0.7,
+          "placement": "derived_to_diagnosis"
+        }
+      ],
+      "used_as_target_parent": true,
+      "notes": "Derived node is calculated from parent evidence using logistic CPD; default propagation can be thresholded or probability-based depending on engine setting.",
+      "domain_tags": [
+        "BPPV"
+      ]
+    },
+    {
+      "node_id": "subjective_positional_vertigo_only",
+      "display_name": "Subjective positional vertigo without observable nystagmus",
+      "node_type": "input",
+      "value_type": "binary",
+      "primary_stage": "bedside",
+      "available_from_stage": [
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "bppv"
+      ],
+      "description": "",
+      "intercept": null,
+      "parents": [],
+      "children": [
+        "subjective_positional_pattern"
+      ],
+      "incoming_edges": [],
+      "outgoing_edges": [
+        {
+          "edge_id": "bppv_e05",
+          "direction": "out",
+          "to_node": "subjective_positional_pattern",
+          "beta": 0.7,
+          "placement": "raw_to_derived"
+        }
+      ],
+      "used_as_target_parent": false,
+      "notes": "",
+      "domain_tags": [
+        "BPPV"
+      ]
+    },
+    {
+      "node_id": "supine_roll_geotropic_or_apogeotropic_nystagmus",
+      "display_name": "Supine roll geotropic/apogeotropic horizontal nystagmus",
+      "node_type": "input",
+      "value_type": "binary",
+      "primary_stage": "bedside",
+      "available_from_stage": [
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "bppv"
+      ],
+      "description": "",
+      "intercept": null,
+      "parents": [],
+      "children": [
+        "horizontal_canal_positional_pattern"
+      ],
+      "incoming_edges": [],
+      "outgoing_edges": [
+        {
+          "edge_id": "bppv_e04",
+          "direction": "out",
+          "to_node": "horizontal_canal_positional_pattern",
+          "beta": 2.0,
+          "placement": "raw_to_derived"
+        }
+      ],
+      "used_as_target_parent": false,
+      "notes": "",
+      "domain_tags": [
+        "BPPV"
+      ]
+    },
+    {
+      "node_id": "tinnitus",
+      "display_name": "Tinnitus",
+      "node_type": "input",
+      "value_type": "binary",
+      "primary_stage": "history",
+      "available_from_stage": [
+        "history",
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "meniere_disease"
+      ],
+      "description": "",
+      "intercept": null,
+      "parents": [],
+      "children": [
+        "auditory_cluster"
+      ],
+      "incoming_edges": [],
+      "outgoing_edges": [
+        {
+          "edge_id": "md_e04",
+          "direction": "out",
+          "to_node": "auditory_cluster",
+          "beta": 0.6,
+          "placement": "raw_to_derived"
+        }
+      ],
+      "used_as_target_parent": false,
+      "notes": "",
+      "domain_tags": [
+        "MD"
+      ]
+    },
+    {
+      "node_id": "vemp_ecog_hydrops_compatible",
+      "display_name": "VEMP/ECoG hydrops-compatible finding",
+      "node_type": "input",
+      "value_type": "binary",
+      "primary_stage": "vestibular_test",
+      "available_from_stage": [
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "meniere_disease"
+      ],
+      "description": "",
+      "intercept": null,
+      "parents": [],
+      "children": [
+        "endolymphatic_hydrops_evidence"
+      ],
+      "incoming_edges": [],
+      "outgoing_edges": [
+        {
+          "edge_id": "md_e09",
+          "direction": "out",
+          "to_node": "endolymphatic_hydrops_evidence",
+          "beta": 0.8,
+          "placement": "raw_to_derived"
+        }
+      ],
+      "used_as_target_parent": false,
+      "notes": "",
+      "domain_tags": [
+        "MD"
+      ]
+    }
+  ]
+}

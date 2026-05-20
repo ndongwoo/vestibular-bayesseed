@@ -1,0 +1,17 @@
+flowchart LR
+    A[Default disease modules\nJSON: BPPV, MD, PVP/BVP] --> B[Schema validation]
+    B --> C[Module loader]
+    C --> D[Derived-node evaluator]
+    D --> E[Logistic CPD engine]
+    E --> F[Posterior inference]
+    F --> G1[Python API]
+    F --> G2[CLI]
+    F --> G3[Synthetic batch examples]
+    F --> G4[Streamlit demonstration UI]
+    F --> H[Visualization and evidence outputs]
+
+    I[Edge-level evidence table] --> A
+    J[Sensitivity ranges] --> F
+    K[Documentation and tests] --> G1
+    K --> G2
+    K --> G4

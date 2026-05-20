@@ -1,0 +1,388 @@
+{
+  "schema_version": "0.1.0",
+  "created": "2026-05-20",
+  "intended_use": "Research and educational demonstration only; not a validated clinical decision-support system.",
+  "cpd_family": "binary logistic CPD",
+  "missingness_policy": "Unobserved inputs are treated as missing/unobserved, not as negative evidence unless a specific negative input node is set to 1.",
+  "coefficient_policy": {
+    "initialization_rule": "beta_init = clip(q * p * beta0, -2.5, +2.5)",
+    "beta0_sources": [
+      "ln(LR+)",
+      "ln(LR-)",
+      "ln(OR)",
+      "capped qualitative prior"
+    ],
+    "clip": [
+      -2.5,
+      2.5
+    ],
+    "note": "Default coefficients are literature-informed starting values, not clinically validated calibration parameters."
+  },
+  "module_id": "presbyvestibulopathy_with_bvp_competitor",
+  "display_name": "Presbyvestibulopathy with bilateral vestibulopathy competitor",
+  "version": "0.1.0",
+  "module_role": "Worked example for chronic vestibular hypofunction and objective threshold-based competing diagnosis.",
+  "target_diseases": [
+    {
+      "id": "dx_presbyvestibulopathy",
+      "display_name": "Presbyvestibulopathy",
+      "intercept": -3.2,
+      "intercept_policy": "Placeholder specialty-clinic prior; PVP is setting- and comorbidity-dependent."
+    },
+    {
+      "id": "dx_bilateral_vestibulopathy",
+      "display_name": "Bilateral vestibulopathy",
+      "intercept": -3.5,
+      "intercept_policy": "Placeholder specialty-clinic prior; adjust by referral pathway."
+    }
+  ],
+  "threshold_notes": {
+    "pvp_mild_bilateral": "vHIT gain <0.8 and >0.6 bilaterally, caloric responses <25 deg/s and >6 deg/s per ear, or rotary-chair gain >0.1 and <0.3.",
+    "bvp_severe_bilateral": "vHIT gain <0.6 bilaterally, caloric sum <6 deg/s per ear, or rotary-chair gain <0.1 with phase lead >68 degrees."
+  },
+  "input_nodes": [
+    {
+      "id": "age_ge_60",
+      "type": "binary",
+      "label": "Age ≥60 years"
+    },
+    {
+      "id": "chronic_dizziness_gt_3months",
+      "type": "binary",
+      "label": "Chronic dizziness/vestibular symptoms >3 months"
+    },
+    {
+      "id": "gait_difficulty_imbalance_falls",
+      "type": "binary",
+      "label": "Gait difficulty, imbalance, or recurrent falls"
+    },
+    {
+      "id": "oscillopsia_or_worse_darkness_uneven_ground",
+      "type": "binary",
+      "label": "Oscillopsia or worse in darkness/uneven ground"
+    },
+    {
+      "id": "mild_bilateral_vestibular_hypofunction",
+      "type": "binary",
+      "label": "Mild bilateral vestibular hypofunction"
+    },
+    {
+      "id": "severe_bilateral_vestibular_hypofunction",
+      "type": "binary",
+      "label": "Severe bilateral vestibular hypofunction"
+    },
+    {
+      "id": "central_neurologic_sign_or_central_mri_lesion",
+      "type": "binary",
+      "label": "Central neurologic sign or central MRI lesion"
+    }
+  ],
+  "derived_nodes": [
+    {
+      "id": "chronic_vestibular_course",
+      "type": "logistic",
+      "intercept": -1.0,
+      "parents": [
+        "chronic_dizziness_gt_3months"
+      ],
+      "description": "Chronic vestibular syndrome lasting at least 3 months."
+    },
+    {
+      "id": "gait_balance_symptom_burden",
+      "type": "logistic",
+      "intercept": -1.2,
+      "parents": [
+        "gait_difficulty_imbalance_falls",
+        "oscillopsia_or_worse_darkness_uneven_ground"
+      ],
+      "description": "Gait/balance burden; oscillopsia/darkness is indirect for PVP and more BVP-like."
+    },
+    {
+      "id": "mild_bilateral_vestibular_hypofunction_node",
+      "type": "logistic",
+      "intercept": -1.0,
+      "parents": [
+        "mild_bilateral_vestibular_hypofunction"
+      ],
+      "description": "Intermediate objective zone between normal and BVP thresholds."
+    },
+    {
+      "id": "severe_bilateral_vestibular_hypofunction_node",
+      "type": "logistic",
+      "intercept": -1.0,
+      "parents": [
+        "severe_bilateral_vestibular_hypofunction"
+      ],
+      "description": "Severe bilateral VOR loss compatible with BVP thresholds."
+    },
+    {
+      "id": "non_central_chronic_vestibular_pattern",
+      "type": "logistic",
+      "intercept": -1.4,
+      "parents": [
+        "chronic_vestibular_course",
+        "gait_balance_symptom_burden",
+        "central_neurologic_sign_or_central_mri_lesion"
+      ],
+      "description": "Chronic peripheral-like pattern not better accounted for by central disorder."
+    }
+  ],
+  "edges": [
+    {
+      "id": "pvp_e01",
+      "from_node": "chronic_dizziness_gt_3months",
+      "to_node": "chronic_vestibular_course",
+      "edge_direction": "supportive",
+      "suggested_beta": 1.2,
+      "suggested_beta_range": [
+        0.8,
+        1.5
+      ],
+      "placement": "raw_to_derived",
+      "evidence_basis": "PVP requires chronic vestibular syndrome ≥3 months.",
+      "evidence_strength": "strong",
+      "sensitivity_analysis": false,
+      "comments": "Chronic dizziness is not specific to PVP."
+    },
+    {
+      "id": "pvp_e02",
+      "from_node": "gait_difficulty_imbalance_falls",
+      "to_node": "gait_balance_symptom_burden",
+      "edge_direction": "supportive",
+      "suggested_beta": 0.9,
+      "suggested_beta_range": [
+        0.6,
+        1.1
+      ],
+      "placement": "raw_to_derived",
+      "evidence_basis": "Core PVP symptom domain.",
+      "evidence_strength": "moderate_to_strong",
+      "sensitivity_analysis": false,
+      "comments": "Gait/falls burden is broader than PVP."
+    },
+    {
+      "id": "pvp_e03",
+      "from_node": "oscillopsia_or_worse_darkness_uneven_ground",
+      "to_node": "gait_balance_symptom_burden",
+      "edge_direction": "supportive",
+      "suggested_beta": 0.6,
+      "suggested_beta_range": [
+        0.3,
+        0.9
+      ],
+      "placement": "raw_to_derived",
+      "evidence_basis": "More direct for BVP than PVP but useful as burden marker.",
+      "evidence_strength": "weak_to_moderate",
+      "sensitivity_analysis": true,
+      "comments": "Sensitivity-analysis edge."
+    },
+    {
+      "id": "pvp_e04",
+      "from_node": "mild_bilateral_vestibular_hypofunction",
+      "to_node": "mild_bilateral_vestibular_hypofunction_node",
+      "edge_direction": "supportive",
+      "suggested_beta": 1.8,
+      "suggested_beta_range": [
+        1.4,
+        2.1
+      ],
+      "placement": "raw_to_derived",
+      "evidence_basis": "PVP objective laboratory threshold.",
+      "evidence_strength": "strong",
+      "sensitivity_analysis": false,
+      "comments": "Strong edge."
+    },
+    {
+      "id": "pvp_e05",
+      "from_node": "severe_bilateral_vestibular_hypofunction",
+      "to_node": "severe_bilateral_vestibular_hypofunction_node",
+      "edge_direction": "supportive",
+      "suggested_beta": 2.0,
+      "suggested_beta_range": [
+        1.6,
+        2.4
+      ],
+      "placement": "raw_to_derived",
+      "evidence_basis": "BVP objective laboratory threshold.",
+      "evidence_strength": "strong",
+      "sensitivity_analysis": false,
+      "comments": "Very strong competing threshold."
+    },
+    {
+      "id": "pvp_e06",
+      "from_node": "chronic_vestibular_course",
+      "to_node": "non_central_chronic_vestibular_pattern",
+      "edge_direction": "supportive",
+      "suggested_beta": 0.6,
+      "suggested_beta_range": [
+        0.3,
+        0.8
+      ],
+      "placement": "derived_to_derived",
+      "evidence_basis": "Defines chronic vestibular context but not etiology.",
+      "evidence_strength": "moderate",
+      "sensitivity_analysis": false,
+      "comments": "Modest."
+    },
+    {
+      "id": "pvp_e07",
+      "from_node": "gait_balance_symptom_burden",
+      "to_node": "non_central_chronic_vestibular_pattern",
+      "edge_direction": "supportive",
+      "suggested_beta": 0.6,
+      "suggested_beta_range": [
+        0.3,
+        0.8
+      ],
+      "placement": "derived_to_derived",
+      "evidence_basis": "Supports chronic vestibular disability pattern.",
+      "evidence_strength": "moderate",
+      "sensitivity_analysis": false,
+      "comments": "Modest."
+    },
+    {
+      "id": "pvp_e08",
+      "from_node": "central_neurologic_sign_or_central_mri_lesion",
+      "to_node": "non_central_chronic_vestibular_pattern",
+      "edge_direction": "competing",
+      "suggested_beta": -1.5,
+      "suggested_beta_range": [
+        -2.0,
+        -1.0
+      ],
+      "placement": "raw_to_derived",
+      "evidence_basis": "PVP must not be better accounted for by another disease.",
+      "evidence_strength": "moderate_to_strong",
+      "sensitivity_analysis": true,
+      "comments": "Broad range; mainly criteria/expert-based."
+    },
+    {
+      "id": "pvp_e09",
+      "from_node": "age_ge_60",
+      "to_node": "dx_presbyvestibulopathy",
+      "edge_direction": "supportive",
+      "suggested_beta": 0.9,
+      "suggested_beta_range": [
+        0.6,
+        1.2
+      ],
+      "placement": "raw_to_diagnosis",
+      "evidence_basis": "Age ≥60 is explicit criterion.",
+      "evidence_strength": "strong_to_moderate",
+      "sensitivity_analysis": false,
+      "comments": "Not sufficient alone."
+    },
+    {
+      "id": "pvp_e10",
+      "from_node": "chronic_vestibular_course",
+      "to_node": "dx_presbyvestibulopathy",
+      "edge_direction": "supportive",
+      "suggested_beta": 0.5,
+      "suggested_beta_range": [
+        0.2,
+        0.8
+      ],
+      "placement": "derived_to_diagnosis",
+      "evidence_basis": "Necessary syndrome context but nonspecific.",
+      "evidence_strength": "moderate",
+      "sensitivity_analysis": false,
+      "comments": "Keep lower than objective threshold."
+    },
+    {
+      "id": "pvp_e11",
+      "from_node": "gait_balance_symptom_burden",
+      "to_node": "dx_presbyvestibulopathy",
+      "edge_direction": "supportive",
+      "suggested_beta": 0.5,
+      "suggested_beta_range": [
+        0.2,
+        0.8
+      ],
+      "placement": "derived_to_diagnosis",
+      "evidence_basis": "Necessary symptom context but nonspecific.",
+      "evidence_strength": "moderate",
+      "sensitivity_analysis": false,
+      "comments": "Same logic as chronic course."
+    },
+    {
+      "id": "pvp_e12",
+      "from_node": "mild_bilateral_vestibular_hypofunction_node",
+      "to_node": "dx_presbyvestibulopathy",
+      "edge_direction": "supportive",
+      "suggested_beta": 1.6,
+      "suggested_beta_range": [
+        1.2,
+        2.0
+      ],
+      "placement": "derived_to_diagnosis",
+      "evidence_basis": "Objective criterion carrying most positive mass for PVP.",
+      "evidence_strength": "strong",
+      "sensitivity_analysis": true,
+      "comments": "Key edge."
+    },
+    {
+      "id": "pvp_e13",
+      "from_node": "non_central_chronic_vestibular_pattern",
+      "to_node": "dx_presbyvestibulopathy",
+      "edge_direction": "supportive",
+      "suggested_beta": 0.7,
+      "suggested_beta_range": [
+        0.4,
+        1.0
+      ],
+      "placement": "derived_to_diagnosis",
+      "evidence_basis": "Separates peripheral age-related syndrome from central mimics.",
+      "evidence_strength": "moderate",
+      "sensitivity_analysis": false,
+      "comments": "Moderate."
+    },
+    {
+      "id": "pvp_e14",
+      "from_node": "severe_bilateral_vestibular_hypofunction_node",
+      "to_node": "dx_bilateral_vestibulopathy",
+      "edge_direction": "supportive",
+      "suggested_beta": 2.2,
+      "suggested_beta_range": [
+        1.8,
+        2.5
+      ],
+      "placement": "derived_to_diagnosis",
+      "evidence_basis": "Severe objective bilateral loss defines BVP.",
+      "evidence_strength": "strong",
+      "sensitivity_analysis": true,
+      "comments": "Strongest BVP edge."
+    },
+    {
+      "id": "pvp_e15",
+      "from_node": "severe_bilateral_vestibular_hypofunction_node",
+      "to_node": "dx_presbyvestibulopathy",
+      "edge_direction": "competing",
+      "suggested_beta": -1.4,
+      "suggested_beta_range": [
+        -1.8,
+        -1.0
+      ],
+      "placement": "derived_to_diagnosis",
+      "evidence_basis": "PVP is explicitly milder than BVP.",
+      "evidence_strength": "strong",
+      "sensitivity_analysis": true,
+      "comments": "Important discriminator."
+    },
+    {
+      "id": "pvp_e16",
+      "from_node": "central_neurologic_sign_or_central_mri_lesion",
+      "to_node": "dx_presbyvestibulopathy",
+      "edge_direction": "competing",
+      "suggested_beta": -1.2,
+      "suggested_beta_range": [
+        -1.7,
+        -0.8
+      ],
+      "placement": "raw_to_diagnosis",
+      "evidence_basis": "Central disease should reduce PVP probability.",
+      "evidence_strength": "moderate",
+      "sensitivity_analysis": true,
+      "comments": "Wider prior than BVP edge."
+    }
+  ]
+}
