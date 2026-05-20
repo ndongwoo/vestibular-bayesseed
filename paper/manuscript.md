@@ -1,3 +1,7 @@
+# Manuscript draft
+
+This manuscript is under preparation for submission to SoftwareX.
+
 # Vestibular-BayesSeed: An Open-Source Framework for Evidence-Anchored Logistic Bayesian Networks in Dizziness Diagnosis
 
 **Manuscript type:** SoftwareX Original Software Publication  
