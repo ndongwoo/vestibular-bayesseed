@@ -110,3 +110,35 @@ def test_read_case_file_and_batch_infer_synthetic_cases(
     outputs = batch_infer(default_modules_dir, examples_dir / "synthetic_cases.csv")
     assert len(outputs) == 9
     assert all(output["disease_results"] for output in outputs)
+
+
+def test_s01_bppv_posterior_with_pc_concordance(default_modules_dir: Path) -> None:
+    """Typical PC-BPPV case (S01) should have posterior ~0.818 with concordance boost."""
+    result = infer_case(
+        default_modules_dir,
+        {
+            "positional_trigger": 1,
+            "brief_duration_seconds_minutes": 1,
+            "dix_hallpike_torsional_upbeating_nystagmus": 1,
+            "central_neurologic_sign_or_central_mri_lesion": 0,
+        },
+    )
+    top = _top_disease(result)
+    assert top["disease_id"] == "dx_bppv"
+    assert abs(top["posterior"] - 0.818) < 0.01
+
+
+def test_s02_bppv_posterior_with_hc_concordance(default_modules_dir: Path) -> None:
+    """Typical HC-BPPV case (S02) should have posterior ~0.802 with concordance boost."""
+    result = infer_case(
+        default_modules_dir,
+        {
+            "positional_trigger": 1,
+            "brief_duration_seconds_minutes": 1,
+            "supine_roll_geotropic_or_apogeotropic_nystagmus": 1,
+            "central_neurologic_sign_or_central_mri_lesion": 0,
+        },
+    )
+    top = _top_disease(result)
+    assert top["disease_id"] == "dx_bppv"
+    assert abs(top["posterior"] - 0.802) < 0.01

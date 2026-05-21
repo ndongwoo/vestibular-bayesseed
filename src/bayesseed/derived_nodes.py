@@ -32,6 +32,57 @@ def _derived_node_map(module: Mapping[str, Any]) -> dict[str, dict[str, Any]]:
     return {str(node["id"]): dict(node) for node in module.get("derived_nodes", [])}
 
 
+def _is_binary_true(v: float | int | bool | None) -> bool:
+    """Return True only for explicit binary-true values (True, 1, 1.0)."""
+    if v is True:
+        return True
+    if isinstance(v, bool):
+        return False
+    if isinstance(v, (int, float)):
+        return v == 1
+    return False
+
+
+def _is_binary_false(v: float | int | bool | None) -> bool:
+    """Return True only for explicit binary-false values (False, 0, 0.0)."""
+    if v is False:
+        return True
+    if isinstance(v, bool):
+        return False
+    if isinstance(v, (int, float)):
+        return v == 0
+    return False
+
+
+def _evaluate_and_interaction(
+    parent_values: dict[str, float | int | bool | None],
+) -> float | None:
+    """Evaluate a deterministic AND interaction feature.
+
+    Derived interaction nodes are engineered evidence features, not
+    diagnostic-criteria audit outputs.  They represent residual excess
+    log-odds beyond the additive main effects of their component variables.
+
+    Missingness policy: missing is unobserved, not imputed as false.
+    Only explicit binary values are accepted:
+
+    - all parents True / 1 / 1.0         -> 1.0
+    - any parent False / 0 / 0.0        -> 0.0
+    - any parent None or non-binary     -> None (missing / insufficient evidence)
+
+    Non-binary floats such as 0.2 or 0.7 are treated as missing to prevent
+    soft probability values from being silently thresholded.
+    """
+    if not parent_values:
+        return None
+    results: list[float | int | bool | None] = list(parent_values.values())
+    if any(_is_binary_false(v) for v in results):
+        return 0.0
+    if all(_is_binary_true(v) for v in results):
+        return 1.0
+    return None
+
+
 def evaluate_derived_nodes(
     module: Mapping[str, Any],
     raw_values: Mapping[str, float | int | bool | None],
@@ -56,6 +107,11 @@ def evaluate_derived_nodes(
     - ``"centered_probability"``: pass max(0, probability - threshold) /
       (1 - threshold), preserving only probability above the activation point.
 
+    Derived interaction nodes (``node_class == "derived_interaction"``) are
+    evaluated deterministically using the specified operator and ignore
+    ``value_mode``.  They are engineered evidence features, not diagnostic
+    criteria audit outputs.
+
     Returns
     -------
     tuple
@@ -75,6 +131,42 @@ def evaluate_derived_nodes(
         progressed = False
         passes += 1
         for node_id in list(unresolved):
+            node = derived_map[node_id]
+
+            # --- Deterministic derived interaction nodes ---
+            if node.get("node_class") == "derived_interaction":
+                parents = node.get("parents", [])
+                parent_ids = set(parents)
+                unresolved_parents = (parent_ids & derived_ids) - set(derived_values)
+                if unresolved_parents:
+                    continue
+                parent_vals = {p: values.get(p) for p in parents}
+                operator = node.get("operator", "AND")
+                if operator == "AND":
+                    downstream_value = _evaluate_and_interaction(parent_vals)
+                else:
+                    raise InferenceError(
+                        f"Derived interaction node '{node_id}': unknown operator '{operator}'."
+                    )
+
+                derived_values[node_id] = downstream_value
+                values[node_id] = downstream_value
+                trace[node_id] = {
+                    "node_id": node_id,
+                    "probability": None,
+                    "value": downstream_value,
+                    "value_mode": "interaction",
+                    "operator": operator,
+                    "node_class": "derived_interaction",
+                    "interaction_type": node.get("interaction_type", ""),
+                    "parents": parents,
+                    "description": node.get("description", ""),
+                }
+                unresolved.remove(node_id)
+                progressed = True
+                continue
+
+            # --- Standard logistic derived nodes ---
             weights = edge_weights_for_node(module, node_id)
             # Parent is available when it is raw/present or a derived node already resolved.
             parent_ids = set(weights)
@@ -82,7 +174,6 @@ def evaluate_derived_nodes(
             if unresolved_derived_parents:
                 continue
 
-            node = derived_map[node_id]
             probability, contributions = logistic_probability(
                 float(node.get("intercept", 0.0)),
                 weights,

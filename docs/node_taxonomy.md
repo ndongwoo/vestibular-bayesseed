@@ -37,9 +37,9 @@ Unobserved inputs are treated as missing, not as negative evidence. If absence i
 
 This avoids confusing "not observed" with "observed to be absent."
 
-## 2. Derived nodes
+## 2. Logistic derived nodes
 
-Derived nodes are intermediate clinical constructs calculated from input nodes or other derived nodes.
+Logistic derived nodes are intermediate clinical constructs calculated from input nodes or other derived nodes using a logistic conditional probability distribution (CPD).
 
 Examples:
 
@@ -64,6 +64,38 @@ Derived nodes are useful when multiple raw findings represent the same diagnosti
   ]
 }
 ```
+
+## 2a. Derived interaction nodes
+
+Derived interaction nodes are a special subclass of derived nodes. They are deterministic engineered features generated from primitive or derived observations, rather than probabilistic constructs with their own intercept and sigmoid CPD.
+
+### Key properties
+
+- **Deterministic activation:** The node evaluates to 1 only when all parent nodes are active (logical AND). Unlike logistic derived nodes, derived interaction nodes do not require an intercept.
+- **Used only in the probabilistic ranking track:** They contribute to disease probability through a downstream edge weight, but they are not outputs of the deterministic criteria-audit track.
+- **Residual excess log-odds:** The interaction coefficient on the edge from the derived interaction node to a target disease captures evidence *beyond* the additive main effects of the parents. This avoids double-counting evidence that is already represented by the parents' own edges.
+- **Not diagnostic-criteria audit outputs:** The field `criteria_audit_output` is always `false`. These nodes do not signal that a formal diagnostic criterion has been met; they are probabilistic-engineering features used to model synergistic evidence patterns.
+
+### Example
+
+```json
+{
+  "id": "pc_positional_concordance",
+  "node_class": "derived_interaction",
+  "interaction_type": "evidence_concordance",
+  "operator": "AND",
+  "parents": [
+    "brief_triggered_positional_syndrome",
+    "posterior_canal_positional_pattern"
+  ],
+  "criteria_audit_output": false,
+  "weight_interpretation": "residual_excess_log_odds",
+  "missingness_policy": "unobserved_not_imputed",
+  "description": "Residual evidence-concordance interaction between brief triggered positional syndrome and posterior-canal positional nystagmus. This is not a diagnostic-criteria audit output."
+}
+```
+
+In the BPPV worked example, `pc_positional_concordance` and `hc_positional_concordance` capture the idea that concordance between a broad triggered positional syndrome and a canal-specific nystagmus pattern provides synergistic evidence beyond what either parent contributes independently.
 
 ## 3. Target disease nodes
 

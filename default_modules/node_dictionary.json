@@ -1,9 +1,15 @@
 {
   "schema_version": "0.1.0",
   "created": "2026-05-20",
-  "description": "Node dictionary for the initial Vestibular-BayesSeed default modules. It consolidates input nodes, derived nodes, and target disease nodes across BPPV, Ménière disease, and PVP/BVP worked examples.",
+  "description": "Node dictionary for the initial Vestibular-BayesSeed default modules. It consolidates input nodes, derived nodes, derived interaction nodes, and target disease nodes across BPPV, Ménière disease, and PVP/BVP worked examples.",
   "intended_use": "Research and educational demonstration only; not a validated clinical decision-support system.",
   "missingness_policy": "Unobserved inputs are treated as missing/unobserved, not as negative evidence unless a specific negative input node is set to 1.",
+  "node_class_legend": {
+    "input": "Raw clinical observation supplied by user or case file.",
+    "derived": "Intermediate clinical construct computed via logistic CPD from parent nodes. Requires an intercept.",
+    "derived_interaction": "Deterministic engineered feature whose activation is the logical conjunction (AND) of parent nodes. Does not require an intercept. Used only for probabilistic ranking, not as a deterministic criteria-audit output. Downstream edge coefficients represent residual excess log-odds beyond additive main effects of the parents.",
+    "target_disease": "Final diagnostic probability node."
+  },
   "stage_order": [
     "history",
     "bedside",
@@ -2039,6 +2045,90 @@
       "notes": "",
       "domain_tags": [
         "MD"
+      ]
+    },
+    {
+      "node_id": "pc_positional_concordance",
+      "display_name": "Posterior canal positional concordance",
+      "node_type": "derived",
+      "node_class": "derived_interaction",
+      "value_type": "binary",
+      "primary_stage": "bedside",
+      "available_from_stage": [
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "bppv"
+      ],
+      "description": "Evidence-concordance interaction: deterministic AND of brief triggered positional syndrome and posterior-canal positional nystagmus. Residual excess log-odds beyond additive main effects. Not a diagnostic-criteria audit output; not a criteria-met node.",
+      "intercept": null,
+      "parents": [
+        "brief_triggered_positional_syndrome",
+        "posterior_canal_positional_pattern"
+      ],
+      "children": [
+        "dx_bppv"
+      ],
+      "incoming_edges": [],
+      "outgoing_edges": [
+        {
+          "edge_id": "bppv_e16",
+          "direction": "out",
+          "to_node": "dx_bppv",
+          "beta": 1.0,
+          "placement": "derived_to_diagnosis"
+        }
+      ],
+      "used_as_target_parent": true,
+      "notes": "Derived interaction node. Does not use intercept or logistic CPD. Activation is deterministic logical AND of parents. Downstream coefficient captures residual interaction effect only.",
+      "domain_tags": [
+        "BPPV",
+        "derived_interaction"
+      ]
+    },
+    {
+      "node_id": "hc_positional_concordance",
+      "display_name": "Horizontal canal positional concordance",
+      "node_type": "derived",
+      "node_class": "derived_interaction",
+      "value_type": "binary",
+      "primary_stage": "bedside",
+      "available_from_stage": [
+        "bedside",
+        "audiometry",
+        "vestibular_test",
+        "imaging"
+      ],
+      "modules": [
+        "bppv"
+      ],
+      "description": "Evidence-concordance interaction: deterministic AND of brief triggered positional syndrome and horizontal-canal positional nystagmus. Residual excess log-odds beyond additive main effects. Not a diagnostic-criteria audit output; not a criteria-met node.",
+      "intercept": null,
+      "parents": [
+        "brief_triggered_positional_syndrome",
+        "horizontal_canal_positional_pattern"
+      ],
+      "children": [
+        "dx_bppv"
+      ],
+      "incoming_edges": [],
+      "outgoing_edges": [
+        {
+          "edge_id": "bppv_e17",
+          "direction": "out",
+          "to_node": "dx_bppv",
+          "beta": 1.0,
+          "placement": "derived_to_diagnosis"
+        }
+      ],
+      "used_as_target_parent": true,
+      "notes": "Derived interaction node. Does not use intercept or logistic CPD. Activation is deterministic logical AND of parents. Downstream coefficient captures residual interaction effect only.",
+      "domain_tags": [
+        "BPPV",
+        "derived_interaction"
       ]
     }
   ]

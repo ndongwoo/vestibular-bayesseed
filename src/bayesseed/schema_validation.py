@@ -35,6 +35,57 @@ def _ensure_list(module: Mapping[str, Any], key: str) -> list[Any]:
     return value
 
 
+def _validate_derived_interaction(
+    derived: Mapping[str, Any],
+    node_id: str,
+    *,
+    input_ids: set[str],
+    derived_ids: set[str],
+    target_ids: set[str],
+) -> None:
+    """Validate a derived_interaction node.
+
+    Derived interaction nodes are deterministic engineered features, not
+    diagnostic-criteria audit outputs.  They require an operator and a
+    parents list instead of an intercept.
+    """
+    operator = derived.get("operator")
+    if operator is None:
+        raise ModuleValidationError(f"Derived interaction node '{node_id}' is missing 'operator'.")
+    if operator != "AND":
+        raise ModuleValidationError(
+            f"Derived interaction node '{node_id}': operator must be 'AND'."
+        )
+    parents = derived.get("parents")
+    if parents is None:
+        raise ModuleValidationError(f"Derived interaction node '{node_id}' is missing 'parents'.")
+    if not isinstance(parents, list) or len(parents) < 2:
+        raise ModuleValidationError(
+            f"Derived interaction node '{node_id}': parents must be a list with at least 2 entries."
+        )
+    if derived.get("criteria_audit_output"):
+        raise ModuleValidationError(
+            f"Derived interaction node '{node_id}': criteria_audit_output must be false. "
+            "Interaction nodes are engineered features, not diagnostic-criteria outputs."
+        )
+
+    allowed_parents = input_ids | derived_ids - {node_id}
+    for parent_id in parents:
+        pid = str(parent_id)
+        if pid == node_id:
+            raise ModuleValidationError(
+                f"Derived interaction node '{node_id}': self-parent reference is not allowed."
+            )
+        if pid in target_ids:
+            raise ModuleValidationError(
+                f"Derived interaction node '{node_id}': target disease '{pid}' cannot be an interaction parent."
+            )
+        if pid not in allowed_parents:
+            raise ModuleValidationError(
+                f"Derived interaction node '{node_id}': unknown parent '{pid}'."
+            )
+
+
 def _ids(items: list[Mapping[str, Any]], label: str) -> set[str]:
     out: set[str] = set()
     for item in items:
@@ -91,12 +142,23 @@ def validate_module(module: Mapping[str, Any], *, strict_edges: bool = True) -> 
     all_node_ids = input_ids | derived_ids | target_ids
 
     for derived in derived_nodes:
-        if "intercept" not in derived:
-            raise ModuleValidationError(f"Derived node '{derived['id']}' is missing 'intercept'.")
-        float(derived["intercept"])
-        parents = derived.get("parents", [])
-        if not isinstance(parents, list):
-            raise ModuleValidationError(f"Derived node '{derived['id']}' parents must be a list.")
+        node_id = str(derived["id"])
+        # derived_interaction nodes use operator/parents; logistic derived nodes use intercept.
+        if derived.get("node_class") == "derived_interaction":
+            _validate_derived_interaction(
+                derived,
+                node_id,
+                input_ids=input_ids,
+                derived_ids=derived_ids,
+                target_ids=target_ids,
+            )
+        elif "intercept" not in derived:
+            raise ModuleValidationError(f"Derived node '{node_id}' is missing 'intercept'.")
+        else:
+            float(derived["intercept"])
+            parents = derived.get("parents", [])
+            if not isinstance(parents, list):
+                raise ModuleValidationError(f"Derived node '{node_id}' parents must be a list.")
 
     edge_ids: set[str] = set()
     for edge in edges:

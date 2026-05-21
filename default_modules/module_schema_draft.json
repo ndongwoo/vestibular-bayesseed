@@ -32,7 +32,116 @@
       "type": "array"
     },
     "derived_nodes": {
-      "type": "array"
+      "type": "array",
+      "description": "Derived nodes represent intermediate clinical constructs. Two node_class variants are supported.",
+      "items": {
+        "oneOf": [
+          {
+            "title": "Logistic derived node",
+            "type": "object",
+            "required": [
+              "id",
+              "node_class",
+              "intercept",
+              "parents"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "node_class": {
+                "const": "logistic"
+              },
+              "display_name": {
+                "type": "string"
+              },
+              "intercept": {
+                "type": "number",
+                "description": "Baseline log-odds for sigmoid CPD. Required for logistic derived nodes."
+              },
+              "parents": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "description": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "title": "Derived interaction node",
+            "type": "object",
+            "required": [
+              "id",
+              "node_class",
+              "interaction_type",
+              "operator",
+              "parents",
+              "criteria_audit_output"
+            ],
+            "description": "A deterministic engineered feature whose activation is the logical conjunction of parent nodes. Unlike logistic derived nodes, derived_interaction nodes do not require an intercept. They are used only in the probabilistic ranking track, not as outputs of the deterministic criteria-audit track. Their downstream edge coefficients represent residual excess log-odds beyond additive main effects of the parents.",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "node_class": {
+                "const": "derived_interaction"
+              },
+              "interaction_type": {
+                "type": "string",
+                "description": "Semantic category of the interaction, e.g. 'evidence_concordance'."
+              },
+              "operator": {
+                "enum": [
+                  "AND"
+                ],
+                "description": "Logical operator combining parents. Currently only AND is supported."
+              },
+              "parents": {
+                "type": "array",
+                "minItems": 2,
+                "items": {
+                  "type": "string"
+                },
+                "description": "Parent node IDs. Must be input or derived (non-interaction) nodes. Must not include target disease nodes or the node itself."
+              },
+              "criteria_audit_output": {
+                "const": false,
+                "description": "Must be false. Derived interaction nodes are probabilistic-engineering features, not deterministic criteria-audit outputs."
+              },
+              "weight_interpretation": {
+                "type": "string",
+                "description": "How to interpret downstream edge weights. Expected value: 'residual_excess_log_odds'."
+              },
+              "missingness_policy": {
+                "type": "string",
+                "description": "Missingness handling. Expected value: 'unobserved_not_imputed'."
+              },
+              "description": {
+                "type": "string"
+              }
+            },
+            "examples": [
+              {
+                "id": "pc_positional_concordance",
+                "node_class": "derived_interaction",
+                "interaction_type": "evidence_concordance",
+                "operator": "AND",
+                "parents": [
+                  "brief_triggered_positional_syndrome",
+                  "posterior_canal_positional_pattern"
+                ],
+                "criteria_audit_output": false,
+                "weight_interpretation": "residual_excess_log_odds",
+                "missingness_policy": "unobserved_not_imputed",
+                "description": "Residual evidence-concordance interaction between brief triggered positional syndrome and posterior-canal positional nystagmus. This is not a diagnostic-criteria audit output."
+              }
+            ]
+          }
+        ]
+      }
     },
     "edges": {
       "type": "array"

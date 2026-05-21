@@ -156,6 +156,23 @@ Recommended edge fields:
 }
 ```
 
+## Derived interaction nodes
+
+Derived interaction nodes (`node_class: "derived_interaction"`) are deterministic engineered features, not logistic CPD derived nodes. Their parameters are set differently:
+
+- **No intercept:** The node evaluates to 1 if (and only if) all parents are 1 (logical AND). There is no sigmoid function or intercept.
+- **Downstream edge weight:** The edge from the interaction node to the target disease carries a single coefficient that represents *residual excess log-odds* — the additional log-odds gained when both (or all) parents co-occur, beyond what they contribute independently through their own edges.
+- **Setting the coefficient:** This is not derived from a standard LR or OR. Instead, it reflects the extent to which the co-occurrence of two patterns is more informative than the sum of their parts. A conservative starting point is ±0.5 to ±1.5, with sensitivity analysis to explore robustness.
+- **Not double-counting:** Because the parents already have their own edges to the downstream target, the interaction coefficient should be moderate. It captures synergy, not duplicated evidence.
+
+Example from the BPPV module:
+
+```text
+pc_positional_concordance → dx_bppv    beta = 1.0   (range 0.5 - 1.5)
+```
+
+Both `brief_triggered_positional_syndrome` and `posterior_canal_positional_pattern` already have independent edges to `dx_bppv`. The concordance node adds a residual term for the case in which both fire together.
+
 ## Practical warning
 
 Do not treat literature-derived ORs, LRs, or criteria-level evidence as universally transportable. Case mix, referral setting, test protocols, disease spectrum, and covariate adjustment all change the meaning of published estimates.
