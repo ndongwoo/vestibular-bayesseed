@@ -159,6 +159,6 @@ Potential impact:
 2. Run tests.
 3. Run examples.
 4. Capture Streamlit screenshot.
-5. Tag `v0.2.1`.
+5. Tag `v0.2.2`.
 6. Archive release with Zenodo.
 7. Submit SoftwareX manuscript with repository link and release DOI.

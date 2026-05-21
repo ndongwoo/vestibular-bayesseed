@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 message: "If you use Vestibular-BayesSeed in your research, please cite the software and the accompanying SoftwareX paper when available."
 title: "Vestibular-BayesSeed: An Open-Source Framework for Evidence-Anchored Logistic Bayesian Networks in Dizziness Diagnosis"
-version: "0.2.1"
+version: "0.2.2"
 date-released: "2026-05-21"
 license: "Apache-2.0"
 repository-code: "https://github.com/ndongwoo/vestibular-bayesseed"

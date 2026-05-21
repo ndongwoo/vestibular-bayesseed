@@ -3,7 +3,7 @@
 | Field | Description |
 |---|---|
 | Software name | Vestibular-BayesSeed |
-| Version | v0.2.1 |
+| Version | v0.2.2 |
 | License | Apache License 2.0 |
 | Programming language | Python |
 | Knowledge representation | Modular JSON disease definitions |

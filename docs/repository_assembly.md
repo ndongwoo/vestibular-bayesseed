@@ -171,8 +171,8 @@ Before submission:
 ```bash
 git init
 git add .
-git commit -m "Initial v0.2.1 release"
-git tag v0.2.1
+git commit -m "Initial v0.2.2 release"
+git tag v0.2.2
 ```
 
 Then push to GitHub and create a release. Consider archiving the release with Zenodo to obtain a DOI.

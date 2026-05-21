@@ -6,7 +6,7 @@ This manuscript is under preparation for submission to SoftwareX.
 
 **Manuscript type:** SoftwareX Original Software Publication  
 **Status:** Draft skeleton for conversion into the official SoftwareX template  
-**Version:** v0.2.1  
+**Version:** v0.2.2  
 **Repository:** TBD: https://github.com/ndongwoo/vestibular-bayesseed  
 **Archive DOI:** TBD after Zenodo release  
 

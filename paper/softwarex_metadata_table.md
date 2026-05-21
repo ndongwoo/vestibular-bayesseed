@@ -4,7 +4,7 @@ Use this table to populate the SoftwareX metadata section. Replace all `TBD` fie
 
 | Metadata field | Value |
 |---|---|
-| Current code version | v0.2.1 |
+| Current code version | v0.2.2 |
 | Permanent link to code/repository used for this code version | TBD: Zenodo DOI or Software Heritage archive URL after release |
 | Permanent link to reproducible capsule | Not applicable / TBD if Code Ocean or Binder is added |
 | Legal code license | Apache License 2.0 |
