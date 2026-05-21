@@ -2,7 +2,7 @@
 
 Sensitivity analysis is essential because the default coefficients are literature-informed starting values, not validated calibration parameters.
 
-The v0.1.0 framework supports one-way beta sensitivity analysis: one edge coefficient is varied across a range while all other coefficients are held constant.
+The current framework supports one-way beta sensitivity analysis: one edge coefficient is varied across a range while all other coefficients are held constant.
 
 ## Why sensitivity analysis matters
 

@@ -37,7 +37,7 @@ streamlit run app/streamlit_app.py
 - [ ] Create GitHub repository.
 - [ ] Push all files.
 - [ ] Open and close at least one test issue or run GitHub Actions if available.
-- [ ] Create release `v0.1.0`.
+- [ ] Create release `v0.2.1`.
 - [ ] Archive release in Zenodo.
 - [ ] Replace all `TBD` placeholders in manuscript.
 - [ ] Capture Streamlit screenshot for Figure 3.

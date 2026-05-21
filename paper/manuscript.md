@@ -6,7 +6,7 @@ This manuscript is under preparation for submission to SoftwareX.
 
 **Manuscript type:** SoftwareX Original Software Publication  
 **Status:** Draft skeleton for conversion into the official SoftwareX template  
-**Version:** v0.1.0 draft  
+**Version:** v0.2.1  
 **Repository:** TBD: https://github.com/ndongwoo/vestibular-bayesseed  
 **Archive DOI:** TBD after Zenodo release  
 
@@ -116,7 +116,7 @@ Key functions include module loading, schema validation, derived-node evaluation
 
 ## 5. Illustrative examples
 
-The v0.1.0 release includes nine synthetic demonstration cases:
+This release includes nine synthetic demonstration cases:
 
 1. `S01_typical_pc_bppv`
 2. `S02_typical_hc_bppv`

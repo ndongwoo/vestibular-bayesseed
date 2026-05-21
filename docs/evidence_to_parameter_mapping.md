@@ -109,7 +109,7 @@ For future Bayesian updating, coefficients may be treated as prior means with di
 | Weak or heterogeneous edge | `Normal(mu, SD 0.8–1.2)` |
 | Expert-only edge | `Normal(mu, SD 1.0–1.3)` |
 
-The v0.1.0 core engine uses fixed coefficients and sensitivity ranges rather than full Bayesian coefficient distributions.
+The current core engine uses fixed coefficients and sensitivity ranges rather than full Bayesian coefficient distributions.
 
 ## Intercepts
 

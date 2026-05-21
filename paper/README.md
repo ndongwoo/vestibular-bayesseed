@@ -35,7 +35,7 @@ paper/
 
 1. Assemble the full GitHub repository.
 2. Run `pytest` and `python examples/run_examples.py` from the repository root.
-3. Create a tagged release, for example `v0.1.0`.
+3. Create a tagged release, for example `v0.2.1`.
 4. Archive the release in Zenodo and obtain a DOI.
 5. Replace all `TBD` placeholders in the manuscript and metadata table.
 6. Convert `softwarex_manuscript_skeleton.md` into the official SoftwareX Word/LaTeX template.

@@ -1,8 +1,8 @@
 cff-version: 1.2.0
 message: "If you use Vestibular-BayesSeed in your research, please cite the software and the accompanying SoftwareX paper when available."
 title: "Vestibular-BayesSeed: An Open-Source Framework for Evidence-Anchored Logistic Bayesian Networks in Dizziness Diagnosis"
-version: "0.1.0"
-date-released: "2026-05-20"
+version: "0.2.1"
+date-released: "2026-05-21"
 license: "Apache-2.0"
 repository-code: "https://github.com/ndongwoo/vestibular-bayesseed"
 url: "https://github.com/ndongwoo/vestibular-bayesseed"
@@ -18,7 +18,7 @@ authors:
   - family-names: "Nam"
     given-names: "Dongwoo"
     email: "ndongwoo@gmail.com"
-    affiliation: "Chungbuk National University Hospital"
+    affiliation: "Chungbuk National University"
 keywords:
   - "Bayesian network"
   - "logistic CPD"
@@ -34,7 +34,7 @@ preferred-citation:
     - family-names: "Nam"
       given-names: "Dongwoo"
       email: "ndongwoo@gmail.com"
-      affiliation: "Chungbuk National University Hospital"
+      affiliation: "Chungbuk National University"
   journal: "SoftwareX"
   year: 2026
   notes: "Manuscript in preparation; update DOI, volume, and page fields after publication."

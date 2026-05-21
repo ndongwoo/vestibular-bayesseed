@@ -1,6 +1,6 @@
 # Default disease modules
 
-The v0.1.0 distribution includes three default worked-example modules:
+The default distribution includes three default worked-example modules:
 
 1. `bppv.json`
 2. `meniere_disease.json`
