@@ -3,7 +3,7 @@
 | Metadata field | Value |
 |---|---|
 | Current code version | v0.2.3 |
-| Permanent link to code/repository used for this code version | https://doi.org/10.5281/zenodo.20325049 |
+| Permanent link to code/repository used for this code version | https://doi.org/10.5281/zenodo.20339056 |
 | Permanent link to reproducible capsule | Not applicable / TBD if Code Ocean or Binder is added |
 | Legal code license | Apache License 2.0 |
 | Code versioning system used | git |

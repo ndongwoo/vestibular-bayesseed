@@ -4,7 +4,7 @@
 **Status:** Draft skeleton for conversion into the official SoftwareX template  
 **Version:** v0.2.3  
 **Repository:** https://github.com/ndongwoo/vestibular-bayesseed  
-**Archive DOI:** 10.5281/zenodo.20325049  
+**Archive DOI:** 10.5281/zenodo.20339056  
 
 ---
 
@@ -22,7 +22,7 @@ Vestibular-BayesSeed is an open-source Python framework for constructing evidenc
 | **Nr** | **Code  metadata description**                               | **Metadata**                                                 |
 | ------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | C1     | Current code version                                         | v0.2.3                                                       |
-| C2     | Permanent link to  code/repository used for this code version | https://github.com/ndongwoo/vestibular-bayesseed; archived version: https://doi.org/10.5281/zenodo.20325049 |
+| C2     | Permanent link to  code/repository used for this code version | https://github.com/ndongwoo/vestibular-bayesseed; archived version: https://doi.org/10.5281/zenodo.20339056 |
 | C3     | Legal code license                                           | Apache License 2.0                                           |
 | C4     | Code versioning system used                                  | git                                                          |
 | C5     | Software code languages,  tools and services used            | Python 3, JSON, YAML, NumPy,  pandas, Pydantic, jsonschema, NetworkX, matplotlib, Click, Rich, Streamlit,  Plotly, pytest, GitHub, Zenodo |
@@ -36,11 +36,11 @@ Vestibular-BayesSeed is an open-source Python framework for constructing evidenc
 
 Dizziness and vertigo diagnosis requires the integration of heterogeneous clinical evidence, including symptom timing and triggers, positional nystagmus, audiometry, vestibular laboratory tests, imaging, and neurological exclusion findings. Consensus diagnostic criteria are clinically useful, but they can be difficult to operationalize when information is incomplete, when overlapping syndromes coexist, or when correlated findings may be counted more than once. Purely data-driven models can also be difficult to train in low-data clinical domains and may not clearly expose how formal criteria and literature-derived evidence are being used.
 
-Bayesian network modeling provides a transparent framework for representing uncertainty, missing observations, dependencies, and competing diagnoses [2,3]. However, manually specifying full conditional probability tables becomes increasingly burdensome as the number of parent nodes increases. Logistic conditional probability distributions (CPDs) provide a compact alternative by representing parent-node contributions as additive log-odds coefficients. This parameterization keeps the model interpretable and allows odds ratios, likelihood ratios, diagnostic-criteria-level evidence, and expert priors to be mapped onto a common coefficient scale, without requiring deterministic criteria-fulfillment outputs to be used as parent nodes.
+Bayesian network modeling provides a transparent framework for representing uncertainty, missing observations, dependencies, and competing diagnoses [1,2]. However, manually specifying full conditional probability tables becomes increasingly burdensome as the number of parent nodes increases. Logistic conditional probability distributions (CPDs) provide a compact alternative by representing parent-node contributions as additive log-odds coefficients. This parameterization keeps the model interpretable and allows odds ratios, likelihood ratios, diagnostic-criteria-level evidence, and expert priors to be mapped onto a common coefficient scale, without requiring deterministic criteria-fulfillment outputs to be used as parent nodes.
 
 Vestibular-BayesSeed was developed to provide a reusable seed framework for this form of clinical knowledge engineering. Users define disease modules in JSON, while the core Python package provides module loading, validation, inference, visualization, and sensitivity analysis. The initial modules are not intended to constitute a validated dizziness clinical decision-support system. Instead, they show how input nodes, derived nodes, target diagnosis nodes, evidence metadata, and sensitivity ranges can be combined within an extensible framework.
 
-The default modules focus on three representative vestibular diagnostic structures: benign paroxysmal positional vertigo (BPPV), Ménière disease (MD), and presbyvestibulopathy (PVP) with bilateral vestibulopathy (BVP) represented as a threshold-based competing diagnosis. These examples were selected because they illustrate different diagnostic patterns: a positional/nystagmus-driven disorder, an episodic audio-vestibular disorder, and a chronic vestibular hypofunction syndrome with quantitative threshold boundaries [5-8].
+The default modules focus on three representative vestibular diagnostic structures: benign paroxysmal positional vertigo (BPPV), Ménière disease (MD), and presbyvestibulopathy (PVP) with bilateral vestibulopathy (BVP) represented as a threshold-based competing diagnosis. These examples were selected because they illustrate different diagnostic patterns: a positional/nystagmus-driven disorder, an episodic audio-vestibular disorder, and a chronic vestibular hypofunction syndrome with quantitative threshold boundaries [3-6].
 
 ---
 
@@ -107,7 +107,7 @@ Vestibular-BayesSeed supports the complete workflow required to define, validate
 
 ### 2.5 Interfaces and sample usage
 
-The package can be used programmatically, from the command line, or through the optional Streamlit demonstration layer. The Streamlit interface is a front-end demonstration tool; the reusable inference logic remains in the Python package. The optional Streamlit case-simulator interface is shown in Figure 3. The archived software version corresponding to this manuscript is cited according to software citation principles [1,4].
+The package can be used programmatically, from the command line, or through the optional Streamlit demonstration layer. The Streamlit interface is a front-end demonstration tool; the reusable inference logic remains in the Python package. The optional Streamlit case-simulator interface is shown in Figure 3. The archived software version corresponding to this manuscript is cited according to software citation principles [7,8].
 
 ---
 
@@ -195,7 +195,7 @@ No patient-level or clinical research dataset was used in this article. Syntheti
 
 ## Code availability
 
-Source code is available at https://github.com/ndongwoo/vestibular-bayesseed. The archived version for this release is https://doi.org/10.5281/zenodo.20325049.
+Source code is available at https://github.com/ndongwoo/vestibular-bayesseed. The archived version for this release is https://doi.org/10.5281/zenodo.20339056.
 
 ---
 
@@ -209,12 +209,12 @@ During the preparation of this work and the associated software, the author used
 
 ## References
 
-[1] Nam D. Vestibular-BayesSeed: An open-source framework for evidence-anchored logistic Bayesian networks in dizziness diagnosis. Version v0.2.3. Zenodo; 2026. doi:10.5281/zenodo.20325049.
-[2] Pearl J. Probabilistic reasoning in intelligent systems: networks of plausible inference. San Francisco: Morgan Kaufmann; 1988.
-[3] Koller D, Friedman N. Probabilistic graphical models: principles and techniques. Cambridge, MA: MIT Press; 2009.
-[4] Smith AM, Katz DS, Niemeyer KE, Chue Hong N, FORCE11 Software Citation Working Group. Software citation principles. PeerJ Computer Science. 2016;2:e86. doi:10.7717/peerj-cs.86.
-[5] Bhattacharyya N, Gubbels SP, Schwartz SR, Edlow JA, El-Kashlan H, Fife T, et al. Clinical practice guideline: benign paroxysmal positional vertigo (update). Otolaryngology-Head and Neck Surgery. 2017;156(3_suppl):S1-S47. doi:10.1177/0194599816689667.
-[6] Lopez-Escamez JA, Carey J, Chung WH, Goebel JA, Magnusson M, Mandalà M, et al. Diagnostic criteria for Menière's disease. Journal of Vestibular Research. 2015;25(1):1-7. doi:10.3233/VES-150549.
-[7] Agrawal Y, Van de Berg R, Wuyts F, Walther L, Magnusson M, Oh E, et al. Presbyvestibulopathy: diagnostic criteria. Consensus document of the Classification Committee of the Bárány Society. Journal of Vestibular Research. 2019;29(4):161-170. doi:10.3233/VES-190672.
-[8] Strupp M, Kim JS, Murofushi T, Straumann D, Jen JC, Rosengren SM, et al. Bilateral vestibulopathy: diagnostic criteria. Consensus document of the Classification Committee of the Bárány Society. Journal of Vestibular Research. 2017;27(4):177-189. doi:10.3233/VES-170619.
+[1] Pearl J. Probabilistic reasoning in intelligent systems: networks of plausible inference. San Francisco: Morgan Kaufmann; 1988.
+[2] Koller D, Friedman N. Probabilistic graphical models: principles and techniques. Cambridge, MA: MIT Press; 2009.
+[3] Bhattacharyya N, Gubbels SP, Schwartz SR, Edlow JA, El-Kashlan H, Fife T, et al. Clinical practice guideline: benign paroxysmal positional vertigo (update). Otolaryngology-Head and Neck Surgery. 2017;156(3_suppl):S1-S47. doi:10.1177/0194599816689667.
+[4] Lopez-Escamez JA, Carey J, Chung WH, Goebel JA, Magnusson M, Mandalà M, et al. Diagnostic criteria for Menière's disease. Journal of Vestibular Research. 2015;25(1):1-7. doi:10.3233/VES-150549.
+[5] Agrawal Y, Van de Berg R, Wuyts F, Walther L, Magnusson M, Oh E, et al. Presbyvestibulopathy: diagnostic criteria. Consensus document of the Classification Committee of the Bárány Society. Journal of Vestibular Research. 2019;29(4):161-170. doi:10.3233/VES-190672.
+[6] Strupp M, Kim JS, Murofushi T, Straumann D, Jen JC, Rosengren SM, et al. Bilateral vestibulopathy: diagnostic criteria. Consensus document of the Classification Committee of the Bárány Society. Journal of Vestibular Research. 2017;27(4):177-189. doi:10.3233/VES-170619.
+[7] Nam D. Vestibular-BayesSeed: An open-source framework for evidence-anchored logistic Bayesian networks in dizziness diagnosis. Version v0.2.3. Zenodo; 2026. doi:10.5281/zenodo.20339056.
+[8] Smith AM, Katz DS, Niemeyer KE, Chue Hong N, FORCE11 Software Citation Working Group. Software citation principles. PeerJ Computer Science. 2016;2:e86. doi:10.7717/peerj-cs.86.
 

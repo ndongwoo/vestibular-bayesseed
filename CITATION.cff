@@ -4,7 +4,7 @@ title: "Vestibular-BayesSeed: An Open-Source Framework for Evidence-Anchored Log
 version: "0.2.3"
 date-released: "2026-05-22"
 license: "Apache-2.0"
-doi: "10.5281/zenodo.20325049"
+doi: "10.5281/zenodo.20339056"
 repository-code: "https://github.com/ndongwoo/vestibular-bayesseed"
 url: "https://github.com/ndongwoo/vestibular-bayesseed"
 abstract: >-
@@ -17,7 +17,7 @@ abstract: >-
   unvalidated clinical diagnosis or patient management.
 authors:
   - family-names: "Nam"
-    given-names: "Dongwoo"
+    given-names: "Dong Woo"
     email: "ndongwoo@gmail.com"
     affiliation: "Chungbuk National University"
 keywords:
@@ -33,7 +33,7 @@ preferred-citation:
   title: "Vestibular-BayesSeed: An Open-Source Framework for Evidence-Anchored Logistic Bayesian Networks in Dizziness Diagnosis"
   authors:
     - family-names: "Nam"
-      given-names: "Dongwoo"
+      given-names: "Dong Woo"
       email: "ndongwoo@gmail.com"
       affiliation: "Chungbuk National University"
   journal: "SoftwareX"
