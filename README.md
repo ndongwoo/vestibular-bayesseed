@@ -1,5 +1,7 @@
 # Vestibular-BayesSeed
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20325049.svg)](https://doi.org/10.5281/zenodo.20325049)
+
 **Vestibular-BayesSeed** is an open-source seed framework for constructing **evidence-anchored logistic Bayesian diagnostic networks** for vestibular disorders.
 
 The project is designed as a transparent, extensible starting point for clinical knowledge engineering rather than as a validated medical diagnostic system. The initial default modules are intended to demonstrate the framework using three representative vestibular diagnostic phenotypes:

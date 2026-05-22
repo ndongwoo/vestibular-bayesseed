@@ -10,21 +10,15 @@ The intended positioning is:
 
 ```text
 paper/
-├── softwarex_manuscript_skeleton.md
+├── manuscript.md
 ├── softwarex_metadata_table.md
-├── cover_letter_draft.md
 ├── highlights.md
-├── graphical_abstract_caption.md
 ├── figures/
-│   ├── figure_plan.md
 │   ├── fig1_architecture.mmd
 │   ├── fig2_node_taxonomy.mmd
-│   ├── fig3_streamlit_demo_caption.md
-│   └── fig4_synthetic_case_output_plan.md
+│   └── fig3_streamlit_demo_caption.md
 ├── tables/
-│   ├── table1_software_metadata.md
-│   ├── table2_functionality.md
-│   └── table3_default_modules.md
+│   └── table1_synthetic_case_output.md
 └── supplementary/
     ├── repository_checklist.md
     ├── evidence_table_description.md
@@ -35,7 +29,7 @@ paper/
 
 1. Assemble the full GitHub repository.
 2. Run `pytest` and `python examples/run_examples.py` from the repository root.
-3. Create a tagged release, for example `v0.2.2`.
+3. Create a tagged release, for example `v0.2.3`.
 4. Archive the release in Zenodo and obtain a DOI.
 5. Replace all `TBD` placeholders in the manuscript and metadata table.
 6. Convert `softwarex_manuscript_skeleton.md` into the official SoftwareX Word/LaTeX template.

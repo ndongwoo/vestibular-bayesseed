@@ -358,11 +358,17 @@ def derived_trace_dataframe(result: Any) -> pd.DataFrame:
     return pd.DataFrame(rows).sort_values("derived_node") if rows else pd.DataFrame()
 
 
-def st_dataframe(df: pd.DataFrame, *, height: int | None = None) -> None:
+def st_dataframe(df: pd.DataFrame, *, height: int | str | None = None) -> None:
     if df.empty:
         st.info("No rows to display.")
     else:
-        st.dataframe(df, use_container_width=True, hide_index=True, height=height)
+        kwargs: dict[str, Any] = {
+            "width": "stretch",
+            "hide_index": True,
+        }
+        if height is not None:
+            kwargs["height"] = height
+        st.dataframe(df, **kwargs)
 
 
 def download_json_button(label: str, data: Any, file_name: str) -> None:
@@ -383,7 +389,7 @@ st.sidebar.caption("Interactive research demonstration UI")
 module_path = st.sidebar.text_input("Module directory", value=default_module_path())
 case_file = st.sidebar.text_input("Synthetic case CSV/JSON", value=default_case_file())
 evidence_table_path = st.sidebar.text_input(
-    "Evidence table CSV/JSON", value=default_evidence_table_path() or ""
+    "Optional external evidence table CSV/JSON", value=default_evidence_table_path() or ""
 )
 sensitivity_path = st.sidebar.text_input(
     "Sensitivity config JSON", value=default_sensitivity_path(module_path) or ""
@@ -635,7 +641,7 @@ with tab_case:
                         title="Posterior probabilities",
                     )
                     fig.update_yaxes(range=[0, 1])
-                    st.plotly_chart(fig, use_container_width=True)
+                    st.plotly_chart(fig, width="stretch")
 
                 st.markdown("#### Module-level explanations")
                 for result in results:
@@ -660,7 +666,8 @@ with tab_case:
 with tab_evidence:
     st.markdown("### Edge-level evidence table")
     st.caption(
-        "This table is loaded from the evidence CSV/JSON when available; otherwise it is reconstructed from module edge metadata."
+        "If an external evidence CSV/JSON is provided, it is loaded here; otherwise, "
+        "the table is reconstructed from edge-level metadata in the JSON modules."
     )
 
     if evidence_df.empty:
@@ -806,7 +813,7 @@ with tab_sensitivity:
                             title="Posterior probability across beta values",
                         )
                         fig.update_yaxes(range=[0, 1])
-                        st.plotly_chart(fig, use_container_width=True)
+                        st.plotly_chart(fig, width="stretch")
                     st.download_button(
                         "Download sensitivity results CSV",
                         sens_out_df.to_csv(index=False),

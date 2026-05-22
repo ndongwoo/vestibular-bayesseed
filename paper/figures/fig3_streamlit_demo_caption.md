@@ -22,5 +22,4 @@ paper/figures/fig3_streamlit_demo.png
 
 Draft caption:
 
-> Figure 3. Optional Streamlit demonstration interface. The interface allows users to inspect default disease modules, enter synthetic clinical findings, view derived-node activation, examine edge-level evidence metadata, and perform one-way sensitivity analysis. The interface is intended for research and educational demonstration only.
-
+> Figure 3. OOptional Streamlit case-simulator interface. The screenshot shows a typical posterior-canal BPPV synthetic case, with posterior ranking, derived-node activation, and edge-level contribution summaries. The displayed pc_positional_concordance node illustrates how the software exposes derived interaction features. The interface is intended for research and educational demonstration only.

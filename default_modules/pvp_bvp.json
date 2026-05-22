@@ -20,8 +20,8 @@
   },
   "module_id": "presbyvestibulopathy_with_bvp_competitor",
   "display_name": "Presbyvestibulopathy with bilateral vestibulopathy competitor",
-  "version": "0.1.0",
-  "module_role": "Worked example for chronic vestibular hypofunction and objective threshold-based competing diagnosis.",
+  "version": "0.1.1",
+  "module_role": "Worked example for chronic vestibular hypofunction, PVP/BVP threshold separation, and BVP syndrome-test concordance.",
   "target_diseases": [
     {
       "id": "dx_presbyvestibulopathy",
@@ -125,6 +125,30 @@
         "central_neurologic_sign_or_central_mri_lesion"
       ],
       "description": "Chronic peripheral-like pattern not better accounted for by central disorder."
+    },
+    {
+      "id": "bvp_functional_syndrome",
+      "type": "logistic",
+      "intercept": -1.4,
+      "parents": [
+        "chronic_vestibular_course",
+        "gait_balance_symptom_burden"
+      ],
+      "description": "BVP-compatible chronic functional syndrome combining chronic vestibular course with gait/balance or visual-motion symptom burden. This is a syndrome feature, not a diagnostic-criteria output."
+    },
+    {
+      "id": "bvp_syndrome_test_concordance",
+      "node_class": "derived_interaction",
+      "interaction_type": "syndrome_test_concordance",
+      "operator": "AND",
+      "parents": [
+        "bvp_functional_syndrome",
+        "severe_bilateral_vestibular_hypofunction_node"
+      ],
+      "criteria_audit_output": false,
+      "weight_interpretation": "residual_excess_log_odds",
+      "missingness_policy": "unobserved_not_imputed",
+      "description": "Residual syndrome-test concordance between BVP-compatible chronic functional symptoms and severe bilateral vestibular hypofunction; not a diagnostic-criteria audit output."
     }
   ],
   "edges": [
@@ -383,6 +407,86 @@
       "evidence_strength": "moderate",
       "sensitivity_analysis": true,
       "comments": "Wider prior than BVP edge."
+    },
+    {
+      "id": "pvp_e17",
+      "from_node": "chronic_vestibular_course",
+      "to_node": "bvp_functional_syndrome",
+      "edge_direction": "supportive",
+      "suggested_beta": 0.8,
+      "suggested_beta_range": [
+        0.5,
+        1.1
+      ],
+      "placement": "derived_to_derived",
+      "evidence_basis": "BVP is defined within a chronic vestibular syndrome context; chronicity is necessary but nonspecific.",
+      "evidence_strength": "moderate",
+      "sensitivity_analysis": false,
+      "comments": "Functional syndrome component; not sufficient alone."
+    },
+    {
+      "id": "pvp_e18",
+      "from_node": "gait_balance_symptom_burden",
+      "to_node": "bvp_functional_syndrome",
+      "edge_direction": "supportive",
+      "suggested_beta": 0.9,
+      "suggested_beta_range": [
+        0.6,
+        1.2
+      ],
+      "placement": "derived_to_derived",
+      "evidence_basis": "BVP symptoms include unsteadiness when walking or standing and worsening with darkness, uneven ground, or head motion.",
+      "evidence_strength": "moderate_to_strong",
+      "sensitivity_analysis": true,
+      "comments": "Captures functional symptom burden compatible with BVP."
+    },
+    {
+      "id": "pvp_e19",
+      "from_node": "bvp_functional_syndrome",
+      "to_node": "dx_bilateral_vestibulopathy",
+      "edge_direction": "supportive",
+      "suggested_beta": 0.7,
+      "suggested_beta_range": [
+        0.4,
+        1.0
+      ],
+      "placement": "derived_to_diagnosis",
+      "evidence_basis": "BVP requires a compatible chronic functional vestibular syndrome, but symptoms alone are nonspecific.",
+      "evidence_strength": "moderate",
+      "sensitivity_analysis": true,
+      "comments": "Modest main effect; objective VOR loss and concordance carry more diagnostic weight."
+    },
+    {
+      "id": "pvp_e20",
+      "from_node": "bvp_syndrome_test_concordance",
+      "to_node": "dx_bilateral_vestibulopathy",
+      "edge_direction": "supportive",
+      "suggested_beta": 1.0,
+      "suggested_beta_range": [
+        0.6,
+        1.3
+      ],
+      "placement": "derived_to_diagnosis",
+      "evidence_basis": "Residual syndrome-test concordance beyond additive effects of chronic functional BVP-like symptoms and severe bilateral VOR hypofunction.",
+      "evidence_strength": "moderate_to_strong",
+      "sensitivity_analysis": true,
+      "comments": "Residual interaction term; not an independent diagnostic finding or criteria-met node."
+    },
+    {
+      "id": "pvp_e21",
+      "from_node": "central_neurologic_sign_or_central_mri_lesion",
+      "to_node": "dx_bilateral_vestibulopathy",
+      "edge_direction": "competing",
+      "suggested_beta": -1.2,
+      "suggested_beta_range": [
+        -1.7,
+        -0.8
+      ],
+      "placement": "raw_to_diagnosis",
+      "evidence_basis": "BVP should not be better accounted for by another central neurologic disorder.",
+      "evidence_strength": "moderate",
+      "sensitivity_analysis": true,
+      "comments": "Symmetric central red-flag suppression for the BVP target."
     }
   ]
 }

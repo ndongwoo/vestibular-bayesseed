@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "vestibular-bayesseed"
-version = "0.2.2"
+version = "0.2.3"
 description = "An open-source seed framework for evidence-anchored logistic Bayesian diagnostic networks in vestibular disorders."
 readme = "README.md"
 requires-python = ">=3.10"
